@@ -2,7 +2,9 @@
   <div class="messages flex-9">
     <div class="toolbar flex-row"> 
       <div class="flex-9">
-        <button class="btn-primary">Neue Nachricht</button>
+        <button
+          class="btn-primary"
+          @click="clickHandler()">Neue Nachricht</button>
         
       </div>
       <form id="search" class="3">
@@ -42,8 +44,16 @@ export default {
   
   created: function () {
 
-    
+  },
+  methods: {
 
+    clickHandler: function () {
+
+      EventBus.$emit('message--new', {
+        //folder: item,
+      })
+
+    }
 
   }
 }

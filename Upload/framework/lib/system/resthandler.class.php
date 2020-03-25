@@ -26,7 +26,8 @@ class resthandler {
         'Test',
         'GetMsgFolders',
         'GetMsgMessages',
-        'GetMsgMessage'
+        'GetMsgMessage',
+        'GetMsgForm'
     ];
   
   

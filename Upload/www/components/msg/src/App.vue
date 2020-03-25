@@ -3,17 +3,21 @@
     <div v-show="errorMsg" id="msg-error" class="callout callout-danger" >
       {{errorMsg}}
     </div>
-    <div class="list flex-row"
+    <div v-show="show.list" class="list flex-row"
       :class="{
-        'height_35' : message.id
+        'height_35' : show.preview
       }">
       <Folders v-bind:folders="folders"></Folders>
       <Messages v-bind:messages="messages"></Messages>
     </div>
-    <div class="preview flex-row"
-      v-if="message.id">
+    <div v-show="show.preview" class="preview flex-row">
       <Bar></Bar>
       <Message v-bind:message="message"></Message>
+    </div>
+
+    <div v-show="show.newMessage">
+      <button @click="clickHandlerCloseNewMessage()">Close</button>
+      <NewMessage></NewMessage>
     </div>
   </div>
 </template>
@@ -31,6 +35,7 @@ import Folders from './components/Folders.vue'
 import Messages from './components/Messages.vue'
 import Message from './components/Message.vue'
 import Bar from './components/Bar.vue'
+import NewMessage from './components/NewMessage.vue'
 
 const axios = require('axios').default;
 
@@ -42,14 +47,20 @@ export default {
     Folders,
     Messages,
     Message,
-    Bar
+    Bar,
+    NewMessage
   },
   data: function () {
     return {
       folders: {},
       messages: [],
       message: {},
-      errorMsg: false
+      errorMsg: false,
+      show: {
+        list: true,
+        preview: false,
+        newMessage: false
+      }
     }
   },
   created: function () {
@@ -69,6 +80,9 @@ export default {
         {},
         function (response, that) {
           that.message = response.data;
+          that.show.list = true;
+          that.show.preview = true;
+          that.showNewMessage = false;
         },
         function (error) {
           that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Message 404)'
@@ -115,6 +129,10 @@ export default {
           if (response.data) {
             //console.log(response.data);
             that.messages = response.data;
+            that.message = {};
+            that.show.list = true;
+            that.show.preview = false;
+            that.showNewMessage = false;
           } else {
             that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Data)'
           }
@@ -126,6 +144,40 @@ export default {
 
     });
 
+
+    EventBus.$on('message--new', data => {
+
+      var url = 'rest.php/GetMsgForm/'+globals.userID;
+      that.ajaxGet(
+        url,
+        {},
+        function (response, that) {
+          if (response.data) {
+
+            this.show.list = false;
+            this.show.preview = false;
+            this.show.newMessage = true;
+            that.message = {};
+
+            
+            console.log(response.data);
+            
+          } else {
+            that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Form Data)'
+          }
+
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Open Form 404)'
+        }
+      );
+      
+
+    });
+
+    /*
+       Init
+    */
     EventBus.$emit('messages--changeFolder', {
       folder: {
         isStandardFolder: true,
@@ -138,7 +190,11 @@ export default {
   },
   methods: {
 
-
+    clickHandlerCloseNewMessage: function () {
+      this.show.list = true;
+      this.show.preview = false;
+      this.show.newMessage = false;
+    },
     ajaxGet: function (url, params, callback, error, allways) {
 
       var that = this;
