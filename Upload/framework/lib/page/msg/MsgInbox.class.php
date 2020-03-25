@@ -323,4 +323,3 @@ class MsgInbox extends AbstractPage {
 
 
 ?>
- No newline at end of file

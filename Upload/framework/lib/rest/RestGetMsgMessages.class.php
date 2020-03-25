@@ -6,14 +6,19 @@ class RestGetMsgMessages extends AbstractRest {
 	
 	public function execute($input, $request) {
 
-		//print_r($input); //POST
-		// print_r($request);
-		// echo '>>>>>>>>>>';
-
-		print_r($request); exit;
-
 		$userID = (int)$request[1];
-		$folder = (int)$request[2];
+		$folder = $request[2];
+		$folderId = 0;
+		
+
+		if (!$folder) {
+			$folder = 'Posteingang';
+		}
+		if ( is_int((int)$folder) && (int)$folder > 0 ) {
+			$folderId = $folder;
+			$folder = 'ANDERER';
+		}
+		//print_r( $folder ); exit;
 
 		if (!$userID) {
 			return [
@@ -23,7 +28,6 @@ class RestGetMsgMessages extends AbstractRest {
 		}
 
 		$user = new user(array('userID' => $userID));
-
 		if (!$user) {
 			return [
 				'error' => true,
@@ -31,16 +35,20 @@ class RestGetMsgMessages extends AbstractRest {
 			];
 		}
 
-		$inbox = MessageFolder::getFolder($user, 'Posteingang');	
-
+		$inbox = MessageFolder::getFolder($user, $folder, $folderId );	
 		$msg_temp = $inbox->getMessages();
 		$messages = array();
 
-		for ($i = 0; $i < count($msg_temp); $i++) {
-			$messages[$i] = $msg_temp[$i]->getJSON();
-		}
 
+		for ($i = 0; $i < count($msg_temp); $i++) {
+
+			if ( method_exists($msg_temp[$i], 'getJSON') ) {
+				$messages[$i] = $msg_temp[$i]->getJSON();
+			}
+		}
+		//print_r($messages); exit;
 		return $messages;
+
 	}
 	
 	public function getAllowedMethod() {
@@ -62,4 +70,3 @@ class RestGetMsgMessages extends AbstractRest {
 }	
 
 ?>
- No newline at end of file

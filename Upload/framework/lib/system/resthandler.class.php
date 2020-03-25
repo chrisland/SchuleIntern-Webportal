@@ -18,13 +18,16 @@ if (!function_exists('getallheaders'))
 } 
 
 class resthandler {
-  private static $actions = [
-     'GetSettingsValue',
-     'SetSettingsValue',
-     'GetAllSettings',
-     'GetUserCount',
-      'Test'
-  ];
+    private static $actions = [
+        'GetSettingsValue',
+        'SetSettingsValue',
+        'GetAllSettings',
+        'GetUserCount',
+        'Test',
+        'GetMsgFolders',
+        'GetMsgMessages',
+        'GetMsgMessage'
+    ];
   
   
 
@@ -105,13 +108,13 @@ class resthandler {
                   }
               }
 
-              if(!isset($headers['schuleinternapirequest']) || $headers['schuleinternapirequest'] != true) {
-                  $result = [
-                      'error' => 1,
-                      'errorText' => 'schuleinternapirequest header not set. '
-                  ];
-                  $this->answer($result, 400);
-              }
+            //   if(!isset($headers['schuleinternapirequest']) || $headers['schuleinternapirequest'] != true) {
+            //       $result = [
+            //           'error' => 1,
+            //           'errorText' => 'schuleinternapirequest header not set. '
+            //       ];
+            //       $this->answer($result, 400);
+            //   }
 
               // Check Auth
               if ($action->needsSystemAuth()) {

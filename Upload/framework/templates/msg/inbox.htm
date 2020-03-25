@@ -1,8 +1,5 @@
 {$this->header}
 
-hello!
-
-$userID
 
 <div id=app></div>
 <script>
@@ -19,5 +16,108 @@ $userID
     // $(function () { });
   </script>
 
+<style>
+
+  .content-wrapper{
+    overflow-x: none;
+  overflow-y: scroll;
+  font-size: 100% !important;
+  }
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+ul li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list {
+  
+}
+.list .folders {
+  background-color: #8aa4af;
+}
+.list .folders button {
+  width: 100%;
+}
+
+.list .gridtemplate {
+  overflow-x: none;
+  overflow-y: scroll;
+  height: 75vh;
+  max-height: 75vh;
+}
+
+.list.height_35,
+.list.height_35 .gridtemplate {
+  height: 35vh;
+  max-height: 35vh;
+}
+
+
+
+
+.preview {
+  height: 25vh;
+  max-height: 25vh;
+}
+.preview .bar {
+  background-color: rgb(201, 210, 219);
+}
+
+.messages table {
+  width: 100%;
+  margin-bottom: 4rem;
+}
+.messages table thead td {
+  cursor: ns-resize;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+  font-weight: bold;
+  background-color: rgb(201, 210, 219);
+}
+
+.messages table tbody td {
+  
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+}
+
+.messages table tr:nth-child(even){
+  background-color: #fff;
+}
+.messages table tbody td span {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+
+
+.message .head {
+  padding: 2rem;
+  background-color: #f4f4f4;
+}
+.message .head label{
+  width: 6rem;
+}
+
+.message .body {
+  padding: 4rem;
+  background-color: #fff;
+  padding-bottom: 20vh;
+}
+
+
+
+</style>
+
 {$this->footer}
- No newline at end of file

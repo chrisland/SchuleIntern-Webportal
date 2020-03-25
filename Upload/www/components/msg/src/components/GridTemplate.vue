@@ -1,31 +1,40 @@
 <template>
   <div class="gridtemplate">
+    <table class="noselect">
+      <thead>
+        <tr>
+          <td v-bind:key="index" v-for="(item, index) in columns"
+            @click="sortBy(item)"
+            :class="{ active: sortKey == item }">
+            {{columsHeader[index]}}
+            <i class="fa "
+              :class="{
+                'fa-sort-down': sortOrders[item] == 1 ,
+                'fa-sort-up': sortOrders[item] == -1
+              }"></i>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-bind:key="index" v-for="(entry, index) in  filteredlist" >
+          <td v-bind:key="index" v-for="(item, index) in columns" >
 
-{{sortKey}}
-<hr>
-{{sortOrders}}
+            <i v-if="item == 'isRead' && entry[item] == 1" class=""></i>
+            <i v-else-if="item == 'isRead' && entry[item] == 0" class="fa fa-envelope-o"></i>
+            <i v-else-if="item == 'priority' && entry[item] == 'NORMAL'" class=""></i>
+            <i v-else-if="item == 'priority' && entry[item] == 'HIGH'" class="fa fa-arrow-up text-red"></i>
+            <i v-else-if="item == 'priority' && entry[item] == 'LOW'" class="fa fa-arrow-down text-green"></i>
+            <i v-else-if="item == 'hasAttachment' && entry[item] " class="fa fa-file-o"></i>
+            <i v-else-if="item == 'hasAttachment' && entry[item] == '' " class=""></i>
+            <span v-else
+              @click="clickHandler(entry, $event)" >
+              {{entry[item]}}
+            </span>
 
-  <table>
-    <thead>
-      <tr>
-        <th v-bind:key="index" v-for="(item, index) in columns"
-        @click="sortBy(item)"
-        :class="{ active: sortKey == item }">
-        {{ item | capitalize }}
-        <span class="arrow" :class="sortOrders[item] > 0 ? 'asc' : 'dsc'">
-        </span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-bind:key="index" v-for="(entry, index) in  filteredlist">
-        <td v-bind:key="index" v-for="(item, index) in columns">
-          {{entry[item]}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -37,24 +46,28 @@ export default {
   props: {
     list: Array,
     columns: Array,
+    columsHeader: Array,
     filterKey: String
   },
   data: function () {
-    var sortOrders = {}
-    this.columns.forEach(function (key) {
-      sortOrders[key] = 1
-    })
+    //var sortOrders = {}
+    // this.columns.forEach(function (key) {
+    //   sortOrders[key] = 0
+    // })
     return {
       sortKey: '',
-      sortOrders: sortOrders
+      sortOrders: {},
+
+      clickHandlerList: [],
+      clickHandlerNode: false
     }
     
   },
   computed: {
     filteredlist: function () {
-      var sortKey = this.sortKey
+
       var filterKey = this.filterKey && this.filterKey.toLowerCase()
-      var order = this.sortOrders[sortKey] || 1
+      var order = parseInt(this.sortOrders[this.sortKey]) || 1
       var list = this.list
       if (filterKey) {
         list = list.filter(function (row) {
@@ -63,42 +76,92 @@ export default {
           })
         })
       }
-      console.log('order',order);
-      if (sortKey) {
+      // console.log('this.sortOrders');
+      //console.log('sortKey',this.sortKey);
+       //console.log('order',order);
+      //  console.log(list);
+
+      var that = this;
+      
+      if (list) {
+
         list = list.slice().sort(function (a, b) {
-          a = a[sortKey]
-          b = b[sortKey]
+          if (that.sortKey == 'timeFormat') {
+            a = a['messageTime']
+            b = b['messageTime']
+          } else {
+            a = a[that.sortKey]
+            b = b[that.sortKey]
+          }
           return (a === b ? 0 : a > b ? 1 : -1) * order
         })
       }
-      return list
+      
+      
+      return list;
     }
   },
   filters: {
     capitalize: function (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
+      if (str) {
+        return str.charAt(0).toUpperCase() + str.slice(1)
+      }
+      return '';
+      
     }
   },
   methods: {
+    clickHandler: function(item, $event) {
+
+      if (!item) {
+        return false;
+      }
+      this.clickHandlerList = [ item ];
+      //TODO: click mit shift -> zwei gleizeitig auswählen
+      EventBus.$emit('message--open', {
+        message: this.clickHandlerList[0],
+      })
+
+      if (this.clickHandlerNode) {
+        this.clickHandlerNode.classList.remove('text-red');
+      }  
+      this.clickHandlerNode = $event.target.parentNode.parentNode;
+      this.clickHandlerNode.classList.add('text-red');
+
+    },
     sortBy: function (key) {
 
-      if (key == 'timeFormat') {
-        console.log(111);
-        key = 'messageTime';
+      if (!key) {
+        return false;
       }
+      // if (key == 'timeFormat') {
+      //   key = 'messageTime';
+      // }
 
       this.sortKey = key
+      var order = parseInt(this.sortOrders[this.sortKey]) || 1;
 
-      if (!(key in this.sortOrders)) {
-        // not set.
-        console.log('dddd');
-        this.sortOrders[key] = 1;
+      // console.log( 'value:', this.sortOrders[this.sortKey ] );
+
+      if ( this.sortKey in this.sortOrders) {
+        
+        // console.log('is set.....');
+        //this.sortOrders[this.sortKey] = order * -1;
+
+        this.$set(this.sortOrders, this.sortKey, order * -1 )
+        //this.sortOrders['timeFormat'] = this.sortOrders['timeFormat']   * -1;
       } else {
         
-        this.sortOrders[key] = this.sortOrders[key] * -1
-        console.log('aaaa',this.sortOrders[key]);
+        // not set.
+        //this.sortOrders[this.sortKey ] = 1;
+        this.sortOrders = {};
+        this.$set(this.sortOrders, this.sortKey, 1 )
+        // console.log('not set....');
       }
 
+       //console.log('# ',this.sortOrders[this.sortKey]);
+      // console.log('sortKey',this.sortKey);
+       //console.log('order',order);
 
       
     }
@@ -110,11 +173,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+/* 
 table {
   border: 2px solid #42b983;
   border-radius: 3px;
   background-color: #fff;
+  margin-bottom: 3rem;
 }
 
 th {
@@ -163,6 +227,6 @@ th.active .arrow {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top: 4px solid #fff;
-}
+} */
 
 </style>

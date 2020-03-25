@@ -1,12 +1,16 @@
 <template>
-  <div class="folders">
-    Folders
+  <div class="folders flex-2">
     <ul>
-      <li v-bind:key="index" v-for="(item, index) in folders"
-        @click="clickHandler(item)"  >
-        {{item.isStandardFolder}}
-        {{item.folderName}}
-        {{item.folderID}}
+      <li v-bind:key="index" v-for="(item, index) in folders">
+        <button class=""
+          @click="clickHandler(item)"
+          :class="{
+            'btn-primary' : item.folderName == 'Posteingang',
+            'btn-success' : item.folderName == 'Gesendete',
+            'btn-outline' : item.isStandardFolder == false
+          }" >
+          {{item.folderName}}
+        </button>
       </li>
     </ul>
 

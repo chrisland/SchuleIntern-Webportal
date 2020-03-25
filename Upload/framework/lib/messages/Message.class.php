@@ -364,20 +364,34 @@ class Message {
 	 *
 	 * @return Array[]
 	 */
-	public function getJSON() {
+	public function getJSON($all = false) {
 
-		return array(
+		$return = array(
 			'id' => $this->id,
 			'userID' => $this->userID,
 			'subject' => $this->subject,
-			'text' => $this->text,
-			'senderID' => $this->sender->getUserID(),
-			'senderName' => $this->sender->getUserName(),
-			'senderFirstName' => $this->sender->getFirstName(),
-			'senderLastName' => $this->sender->getLastName(),
-			'folder' => $this->folder,
-			'folderID' => $this->folderID
+//#			'senderID' => $this->getSender()->getUserID(),
+			//'senderName' => $this->sender->getUserName(),
+//#			'senderConnect' => $this->sender->getFirstName().' '.$this->sender->getLastName().' ('.$this->sender->getUserName().')',
+			//'senderFirstName' => $this->sender->getFirstName(),
+			//'senderLastName' => $this->sender->getLastName(),
+			//'folder' => $this->folder,
+			//'folderID' => $this->folderID,
+			'isRead' => $this->isRead,
+			'priority' => $this->priority,
+			'messageTime' => $this->messageTime,
+			'timeFormat' => date('d.m.Y H:i', $this->messageTime),
+			'hasAttachment' => $this->hasAttachment
+			//'getAttachments' => $this->getAttachments()
 		);
+		if ( $this->getSender() ) {
+			$return['senderID'] = $this->getSender()->getUserID();
+			$return['senderConnect'] = $this->getSender()->getFirstName().' '.$this->getSender()->getLastName().' ('.$this->getSender()->getUserName().')';
+		}
+		if ($all == true) {
+			$return['text'] = $this->text;
+		}
+		return $return;
 	}
 
 

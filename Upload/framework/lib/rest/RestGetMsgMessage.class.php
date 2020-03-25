@@ -1,17 +1,24 @@
 <?php
 
-class RestGetMsgFolders extends AbstractRest {
+class RestGetMsgMessage extends AbstractRest {
   
   protected $statusCode = 200;
 	
 	public function execute($input, $request) {
 
 		$userID = (int)$request[1];
+		$messageID = (string)$request[2];
 
 		if (!$userID) {
 			return [
 				'error' => true,
 				'msg' => 'Fehlende User ID'
+			];
+		}
+		if (!$messageID) {
+			return [
+				'error' => true,
+				'msg' => 'Fehlender MessageID'
 			];
 		}
 
@@ -23,15 +30,18 @@ class RestGetMsgFolders extends AbstractRest {
 				'msg' => 'Fehlender User'
 			];
 		}
-	
-		$folders = array(
-			'inbox' => MessageFolder::getFolder($user, 'Posteingang')->getJSON(),
-			'outbox' => MessageFolder::getFolder($user, 'Gesendete')->getJSON(),
-		);
-		$folders = $folders + MessageFolder::getMyFolders($user, 'json');
 
-	
-		return $folders;
+		$message = Message::getByID($messageID);	
+		$obj = $message->getJSON(true);
+
+		if (!$obj) {
+			return [
+				'error' => true,
+				'msg' => 'Fehlende Nachricht'
+			];
+		}
+
+		return $obj;
 	}
 	
 	public function getAllowedMethod() {

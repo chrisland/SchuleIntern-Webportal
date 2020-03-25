@@ -1,8 +1,20 @@
 <template>
-  <div id="app">
-    <Folders v-bind:folders="folders"></Folders>
-    <Messages v-bind:messages="messages"></Messages>
-    <Message></Message>
+  <div id="app" class="flex">
+    <div v-show="errorMsg" id="msg-error" class="callout callout-danger" >
+      {{errorMsg}}
+    </div>
+    <div class="list flex-row"
+      :class="{
+        'height_35' : message.id
+      }">
+      <Folders v-bind:folders="folders"></Folders>
+      <Messages v-bind:messages="messages"></Messages>
+    </div>
+    <div class="preview flex-row"
+      v-if="message.id">
+      <Bar></Bar>
+      <Message v-bind:message="message"></Message>
+    </div>
   </div>
 </template>
 
@@ -18,6 +30,7 @@ globals = globals || {
 import Folders from './components/Folders.vue'
 import Messages from './components/Messages.vue'
 import Message from './components/Message.vue'
+import Bar from './components/Bar.vue'
 
 const axios = require('axios').default;
 
@@ -28,12 +41,15 @@ export default {
   components: {
     Folders,
     Messages,
-    Message
+    Message,
+    Bar
   },
   data: function () {
     return {
       folders: {},
-      messages: []
+      messages: [],
+      message: {},
+      errorMsg: false
     }
   },
   created: function () {
@@ -41,11 +57,29 @@ export default {
 
     var that = this;
 
+    EventBus.$on('message--open', data => {
+
+      var url = 'rest.php/GetMsgMessage/'+globals.userID;
+      if (data.message.id) {
+        url += '/'+parseInt(data.message.id)
+      }
+      that.ajaxGet(
+        url,
+        //'./../testjson/GetMsgFolders.json',
+        {},
+        function (response, that) {
+          that.message = response.data;
+        }
+      );
+
+    });
+
+
     EventBus.$on('folders--get', data => {
 
       that.ajaxGet(
-        //'rest.php/GetMsgFolders/'+globals.userID,
-        './../testjson/GetMsgFolders.json',
+        'rest.php/GetMsgFolders/'+globals.userID,
+        //'./../testjson/GetMsgFolders.json',
         {},
         function (response, that) {
           that.folders = response.data;
@@ -56,7 +90,7 @@ export default {
 
     EventBus.$on('messages--changeFolder', data => {
 
-      console.log('cghange msg folder',data.folder.folderName);
+      //console.log('change msg folder',data.folder.folderName);
 
       var url = 'rest.php/GetMsgMessages/'+globals.userID;
 
@@ -66,11 +100,23 @@ export default {
         url += '/'+data.folder.folderID;
       }
       that.ajaxGet(
-        //url,
-        './../testjson/GetMsgMessages.json',
+        url,
+        //'./../testjson/GetMsgMessages.json',
         {},
         function (response, that) {
-          that.messages = response.data;
+          //console.log(response);
+          
+          if (response.data) {
+            //console.log(response.data);
+            that.messages = response.data;
+          } else {
+            that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Data)'
+          }
+        },
+        function (error) {
+          //console.log('error!');
+          //console.log(error);
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax 404)'
         }
       );
 
@@ -79,7 +125,7 @@ export default {
     EventBus.$emit('messages--changeFolder', {
       folder: {
         isStandardFolder: true,
-        folderName: 'posteingang',
+        folderName: 'Posteingang',
         folderID: 0
       },
     })
@@ -102,10 +148,10 @@ export default {
           callback(response, that);
         }
       })
-      .catch(function (error) {
+      .catch(function (resError) {
         //console.log(error);
-        if (error && typeof error === 'function') {
-          error(error);
+        if (resError && typeof error === 'function') {
+          error(resError);
         }
       })
       .finally(function () {
@@ -121,4 +167,6 @@ export default {
 </script>
 
 <style>
+
+
 </style>

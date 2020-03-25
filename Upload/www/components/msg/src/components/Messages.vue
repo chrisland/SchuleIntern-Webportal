@@ -1,17 +1,21 @@
 <template>
-  <div class="messages">
-    Messages
-
-    <div id="demo">
-      <form id="search">
-        Search <input name="query" v-model="searchQuery">
+  <div class="messages flex-9">
+    <div class="toolbar flex-row"> 
+      <div class="flex-9">
+        <button class="btn-primary">Neue Nachricht</button>
+        
+      </div>
+      <form id="search" class="3">
+        <input type="search" name="query" v-model="searchQuery">
       </form>
-      <GridTemplate
-        v-bind:list="messages"
-        v-bind:columns="gridColumns"
-        v-bind:filter-key="searchQuery">
-      </GridTemplate>
     </div>
+
+    <GridTemplate
+      v-bind:list="messages"
+      v-bind:columns="gridColumns"
+      v-bind:columsHeader="gridColumnsHeader"
+      v-bind:filter-key="searchQuery">
+    </GridTemplate>
 
   </div>
 </template>
@@ -31,7 +35,8 @@ export default {
   data: function () {
     return {
       searchQuery: '',
-      gridColumns: ['subject', 'senderName','timeFormat']
+      gridColumns: ['hasAttachment','priority','isRead','subject', 'senderConnect','timeFormat'],
+      gridColumnsHeader: ['','','','Betreff', 'Sender','Datum']
     }
   },
   
