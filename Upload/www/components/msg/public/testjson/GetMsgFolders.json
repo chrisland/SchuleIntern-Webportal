@@ -1,0 +1,20 @@
+{
+  "inbox": {
+    "isStandardFolder": true,
+    "folderID": 0,
+    "folderName": "Posteingang",
+    "userID": 1608
+  },
+  "outbox": {
+    "isStandardFolder": true,
+    "folderID": 0,
+    "folderName": "Gesendete",
+    "userID": 1608
+  },
+  "offene Bugs2": {
+    "isStandardFolder": false,
+    "folderID": "84",
+    "folderName": "offene Bugs2",
+    "userID": 1608
+  }
+}
