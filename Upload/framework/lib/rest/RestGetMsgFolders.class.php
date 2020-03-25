@@ -27,6 +27,8 @@ class RestGetMsgFolders extends AbstractRest {
 		$folders = array(
 			'inbox' => MessageFolder::getFolder($user, 'Posteingang')->getJSON(),
 			'outbox' => MessageFolder::getFolder($user, 'Gesendete')->getJSON(),
+			'archiv' => MessageFolder::getFolder($user, 'Archiv')->getJSON(),
+			'rubish' => MessageFolder::getFolder($user, 'Papierkorb')->getJSON()
 		);
 		$folders = $folders + MessageFolder::getMyFolders($user, 'json');
 

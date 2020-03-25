@@ -69,6 +69,9 @@ export default {
         {},
         function (response, that) {
           that.message = response.data;
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Message 404)'
         }
       );
 
@@ -83,6 +86,9 @@ export default {
         {},
         function (response, that) {
           that.folders = response.data;
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
         }
       );
 
@@ -114,9 +120,7 @@ export default {
           }
         },
         function (error) {
-          //console.log('error!');
-          //console.log(error);
-          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax 404)'
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Change Folders 404)'
         }
       );
 
