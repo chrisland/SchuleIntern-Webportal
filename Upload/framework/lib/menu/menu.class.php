@@ -930,6 +930,7 @@ class menu {
 
    $this->html .= $this->getMenuItem('MessageInbox', "Nachrichten", "fa fa-envelope");
 
+   $this->html .= $this->getMenuItem('MsgInbox', "Msg System", "fa fa-envelope");
 
   }
   

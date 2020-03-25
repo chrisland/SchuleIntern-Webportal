@@ -361,6 +361,27 @@ class Message {
     }
 	
 	/**
+	 *
+	 * @return Array[]
+	 */
+	public function getJSON() {
+
+		return array(
+			'id' => $this->id,
+			'userID' => $this->userID,
+			'subject' => $this->subject,
+			'text' => $this->text,
+			'senderID' => $this->sender->getUserID(),
+			'senderName' => $this->sender->getUserName(),
+			'senderFirstName' => $this->sender->getFirstName(),
+			'senderLastName' => $this->sender->getLastName(),
+			'folder' => $this->folder,
+			'folderID' => $this->folderID
+		);
+	}
+
+
+	/**
 	 * 
 	 * @return boolean
 	 */

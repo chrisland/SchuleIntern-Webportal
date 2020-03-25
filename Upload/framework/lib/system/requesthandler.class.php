@@ -56,7 +56,10 @@ class requesthandler {
   		'MessageSendRights',
   		'MessageAttachmentDownload',
   		'MessageConfirm'
-  	],
+    ],
+    'msg' => [
+      'MsgInbox'
+    ],
     'kondolenzbuch' => [
         'kondolenzbuch'
     ],

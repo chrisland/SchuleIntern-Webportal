@@ -11,14 +11,13 @@ class MessageFolder {
 	private $folderName;
 	private $user;
 	
-	public function __construct($isStandardFolder, $data, $user, $folder) {
+	public function __construct($isStandardFolder = false, $data = array(), $user = false, $folder = false) {
 		if($isStandardFolder) {
 			$this->isStandardFolder = $isStandardFolder;
 			$this->folderID = 0;
 			$this->folderName = $data['folderName'];
 			$this->user = $user;
-		}
-		else {
+		} else {
 			$this->folderID = $data['folderID'];
 			$this->folderName = $data['folderName'];
 			$this->user = $user;
@@ -35,6 +34,16 @@ class MessageFolder {
 		return $this->folderID;
 	}
 	
+	public function getJSON() {
+
+		return array(
+			'isStandardFolder' => $this->isStandardFolder,
+			'folderID' => $this->folderID,
+			'folderName' => $this->folderName,
+			'userID' => $this->user->getUserID()
+		);
+	}
+
 	
 	/**
 	 * 
@@ -52,7 +61,7 @@ class MessageFolder {
 	 * 
 	 * @return Message[] Nachrichten im Verzeichnis
 	 */
-	public function getMessages($limit, $offset) {
+	public function getMessages($limit = '999999', $offset = 0) {
 		return Message::getMessages($this->user, $this->folder, $this->folderID, $limit, $offset);
 	}
 	
@@ -128,13 +137,20 @@ class MessageFolder {
 	 * @param user $user
 	 * @return MessageFolder[]
 	 */
-	public static function getMyFolders($user) {
+	public static function getMyFolders($user, $output = false) {
 	    $fData = DB::getDB()->query("SELECT * FROM messages_folders WHERE folderUserID='" . $user->getUserID() . "'");
 	    
 	    $folders = [];
 	    
 	    while($f = DB::getDB()->fetch_array($fData)) {
-	        $folders[] = new MessageFolder(false, $f, $user, 'ANDERER');
+					//$folders[] = new MessageFolder(false, $f, $user, 'ANDERER');
+					if ($output == 'json') {
+						$foo = new MessageFolder(false, $f, $user, 'ANDERER');
+						$folders[ $f['folderName'] ] = $foo->getJSON();
+					} else {
+						$folders[] = new MessageFolder(false, $f, $user, 'ANDERER');
+					}
+	
 	    }
 	    
 	    return $folders;
@@ -154,7 +170,12 @@ class MessageFolder {
 	 * @param int $folderID
 	 * @return NULL|MessageFolder
 	 */
-	public static function getFolder($user, $folder, $folderID) {
+	public static function getFolder($user = false, $folder = false, $folderID = false) {
+		if (!$user) {
+			return NULL;
+		}
+		$folder = strtoupper($folder);
+
 		if(!in_array($folder,['POSTEINGANG','GESENDETE','PAPIERKORB','ARCHIV','ANDERER'])) {
 			return NULL;
 		}
@@ -163,8 +184,9 @@ class MessageFolder {
 			$fData = DB::getDB()->query_first("SELECT * FROM messages_folders WHERE folderID='" . intval($folderID) . "' AND folderUserID='" . $user->getUserID() . "'");
 			if($fData['folderID'] > 0) {
 				return new MessageFolder(false, $fData, $user, $folder);
+			} else {
+				return NULL;
 			}
-			else return NULL;
 		}
 		
 		if($folder == 'POSTEINGANG') {

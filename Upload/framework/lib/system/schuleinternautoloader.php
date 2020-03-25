@@ -165,7 +165,7 @@ $classes = [
 		'settings',
 		'Debugger',
 		'Encoding',
-	    'resthandler'
+	  'resthandler'
 	],
 	'tpl' => [
 		'TemplateParser',
@@ -200,9 +200,11 @@ $classes = [
 		'RecipientHandler',
 		'MessageSender',
 		'MessageAttachment',
-	    'MessageQuestion',
-	    'MessageAnswer'
-			
+	  'MessageQuestion',
+	  'MessageAnswer'
+	],
+	'msg' => [
+		'Msg'
 	],
 	'messages/recipients' => [
 		'AllTeacherRecipient',
