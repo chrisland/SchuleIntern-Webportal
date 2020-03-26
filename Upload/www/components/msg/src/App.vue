@@ -15,9 +15,9 @@
       <Message v-bind:message="message"></Message>
     </div>
 
-    <div v-show="show.newMessage">
-      <button @click="clickHandlerCloseNewMessage()">Close</button>
-      <NewMessage></NewMessage>
+    <div v-show="show.form">
+      <button @click="clickHandlerCloseform()">Close</button>
+      <Form></Form>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ import Folders from './components/Folders.vue'
 import Messages from './components/Messages.vue'
 import Message from './components/Message.vue'
 import Bar from './components/Bar.vue'
-import NewMessage from './components/NewMessage.vue'
+import Form from './components/Form.vue'
 
 const axios = require('axios').default;
 
@@ -48,7 +48,7 @@ export default {
     Messages,
     Message,
     Bar,
-    NewMessage
+    Form
   },
   data: function () {
     return {
@@ -59,7 +59,7 @@ export default {
       show: {
         list: true,
         preview: false,
-        newMessage: false
+        form: false
       }
     }
   },
@@ -82,7 +82,7 @@ export default {
           that.message = response.data;
           that.show.list = true;
           that.show.preview = true;
-          that.showNewMessage = false;
+          that.showform = false;
         },
         function (error) {
           that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Message 404)'
@@ -132,7 +132,7 @@ export default {
             that.message = {};
             that.show.list = true;
             that.show.preview = false;
-            that.showNewMessage = false;
+            that.showform = false;
           } else {
             that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Data)'
           }
@@ -156,7 +156,7 @@ export default {
 
             this.show.list = false;
             this.show.preview = false;
-            this.show.newMessage = true;
+            this.show.form = true;
             that.message = {};
 
             
@@ -190,10 +190,10 @@ export default {
   },
   methods: {
 
-    clickHandlerCloseNewMessage: function () {
+    clickHandlerCloseform: function () {
       this.show.list = true;
       this.show.preview = false;
-      this.show.newMessage = false;
+      this.show.form = false;
     },
     ajaxGet: function (url, params, callback, error, allways) {
 

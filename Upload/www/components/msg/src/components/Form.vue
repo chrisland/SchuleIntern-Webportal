@@ -1,5 +1,5 @@
 <template>
-  <div class="message flex-9">
+  <div class="form flex-9">
     hier
   </div>
 </template>
@@ -9,7 +9,7 @@
 //import GridTemplate from './GridTemplate.vue'
 
 export default {
-  name: 'NewMessage',
+  name: 'Form',
   components: {
     //GridTemplate
   },
