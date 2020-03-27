@@ -145,7 +145,7 @@ export default {
     });
 
 
-    EventBus.$on('message--new', data => {
+    EventBus.$on('message--form', data => {
 
       var url = 'rest.php/GetMsgForm/'+globals.userID;
       that.ajaxGet(
@@ -154,9 +154,9 @@ export default {
         function (response, that) {
           if (response.data) {
 
-            this.show.list = false;
-            this.show.preview = false;
-            this.show.form = true;
+            that.show.list = false;
+            that.show.preview = false;
+            that.show.form = true;
             that.message = {};
 
             

@@ -49,7 +49,7 @@ export default {
 
     clickHandler: function () {
 
-      EventBus.$emit('message--new', {
+      EventBus.$emit('message--form', {
         //folder: item,
       })
 

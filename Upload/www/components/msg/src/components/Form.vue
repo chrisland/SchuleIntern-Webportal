@@ -1,6 +1,34 @@
 <template>
   <div class="form flex-9">
-    hier
+    <form action="index.php?page=MessageCompose"
+      method="post" enctype="multipart/form-data" id="composeForm">
+      
+      <ul>
+        <li>
+          Empfänger:
+          <button>add</button>
+        </li>
+        <li>
+          Kopieempfänger cc:
+          <button>add</button>
+        </li>
+        <li>
+          Verdeckte Kopieempfänger bcc:
+          <button>add</button>
+        </li>
+      </ul>
+
+      betreff:
+      <input type="text" name="betreff" />
+
+      text:
+      <textarea name="content"></textarea>
+
+
+      <button  @click="clickHandlerSubmit()">Nachricht senden</button>
+    
+    </form>
+
   </div>
 </template>
 
@@ -26,6 +54,16 @@ export default {
   },
   methods: {
 
+    clickHandlerSubmit: function () {
+      console.log('...senden');
+      /*
+      if(currentRecipients.length == 0) {
+        this.errorMsg = 'Es muss mindestens ein Empfänger angegeben sein!';
+      } else {
+        $("#composeForm").submit();
+      }
+      */
+    }
  
 
   }
