@@ -127,7 +127,7 @@ export default {
           //console.log(response);
           
           if (response.data) {
-            //console.log(response.data);
+            console.log(response.data);
             that.messages = response.data;
             that.message = {};
             that.show.list = true;

@@ -388,6 +388,13 @@ class Message {
 			$return['senderID'] = $this->getSender()->getUserID();
 			$return['senderConnect'] = $this->getSender()->getFirstName().' '.$this->getSender()->getLastName().' ('.$this->getSender()->getUserName().')';
 		}
+		if ( $this->getRecipients() ) {
+			$return['recipients'] = json_encode($this->recipients);
+			//$return['senderConnect'] = $this->getSender()->getFirstName().' '.$this->getSender()->getLastName().' ('.$this->getSender()->getUserName().')';
+		}
+
+		
+
 		if ($all == true) {
 			$return['text'] = $this->text;
 		}
