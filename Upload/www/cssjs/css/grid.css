@@ -21,8 +21,16 @@
   flex: 4;
 }
 
+.flex-8 {
+  flex: 8;
+}
+
 .flex-9 {
   flex: 9;
+}
+
+.flex-10 {
+  flex: 10;
 }
 
 
@@ -39,4 +47,9 @@
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
+}
+
+
+.margin-b-m {
+  margin-bottom: 1.3rem;
 }

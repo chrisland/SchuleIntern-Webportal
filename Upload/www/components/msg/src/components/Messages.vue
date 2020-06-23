@@ -1,5 +1,5 @@
 <template>
-  <div class="messages flex-9">
+  <div class="messages flex-10">
     <div class="toolbar flex-row"> 
       <div class="flex-9">
         <button

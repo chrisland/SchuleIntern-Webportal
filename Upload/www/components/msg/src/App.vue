@@ -16,7 +16,7 @@
     </div>
 
     <div v-show="show.form">
-      <button @click="clickHandlerCloseform()">Close</button>
+      <!-- <button @click="clickHandlerCloseform()">Close</button> -->
       <Form></Form>
     </div>
   </div>
@@ -175,6 +175,13 @@ export default {
 
     });
 
+    EventBus.$on('message--form--close', data => {
+      console.log('close form');
+      this.show.list = true;
+      this.show.preview = false;
+      this.show.form = false;
+    });
+
     /*
        Init
     */
@@ -190,11 +197,9 @@ export default {
   },
   methods: {
 
-    clickHandlerCloseform: function () {
-      this.show.list = true;
-      this.show.preview = false;
-      this.show.form = false;
-    },
+    // clickHandlerCloseform: function () {
+      
+    // },
     ajaxGet: function (url, params, callback, error, allways) {
 
       var that = this;

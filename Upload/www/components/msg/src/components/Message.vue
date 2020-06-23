@@ -1,5 +1,5 @@
 <template>
-  <div class="message flex flex-9">
+  <div class="message flex flex-10">
 
     <div
       v-if="message.id"
