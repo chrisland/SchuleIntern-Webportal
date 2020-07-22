@@ -20,7 +20,15 @@
 .flex-4 {
   flex: 4;
 }
-
+.flex-5 {
+  flex: 5;
+}
+.flex-6 {
+  flex: 6;
+}
+.flex-7 {
+  flex: 7;
+}
 .flex-8 {
   flex: 8;
 }
@@ -49,7 +57,20 @@
                                   supported by Chrome, Opera and Firefox */
 }
 
+.margin-r-xs {
+  margin-right: 0.3rem;
+}
+.margin-r-s {
+  margin-right: 0.6rem;
+}
 
+
+.margin-b-s {
+  margin-bottom: 0.6rem;
+}
 .margin-b-m {
   margin-bottom: 1.3rem;
+}
+.margin-b-l {
+  margin-bottom: 2.3rem;
 }

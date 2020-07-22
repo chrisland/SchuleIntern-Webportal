@@ -3,7 +3,7 @@
     <div class="toolbar flex-row"> 
       <div class="flex-9">
         <button
-          class="btn-primary"
+          class="btn btn-blau"
           @click="clickHandler()">Neue Nachricht</button>
         
       </div>

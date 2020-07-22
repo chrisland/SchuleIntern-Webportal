@@ -4,7 +4,12 @@
 <div id=app></div>
 <script>
   var globals = {
-    userID: $userID 
+    userID: $userID,
+    selectOptionsFachschaften: $selectOptionsFachschaften,
+    selectOptionsKlassenteams: $selectOptionsKlassenteams,
+    selectOptionsKlassenleitung: $selectOptionsKlassenleitung,
+    selectOptionsSchueler: $selectOptionsSchueler,
+    selectOptionsSchuelerOwnUnterricht: $selectOptionsSchuelerOwnUnterricht
   }
   
 </script>
@@ -117,6 +122,51 @@ ul li {
 }
 
 
+
+/*
+* FormRecipient.vue
+*/
+
+.form-recipients button {
+  background-color: rgba(255,255,255,0);
+  
+  border-radius: 0;
+  border-bottom: 1px solid #738b96;
+  color: #000;
+
+  
+  background-repeat: no-repeat;
+  background-position: 95% center;
+  background-size: auto 50%;
+
+}
+
+.form-recipients button.chevron {
+  background-image: url('cssjs/icons/chevron_grey.svg') !important;
+}
+
+.form-recipients button:hover {
+  background-color: rgba(255,255,255,0);
+  color: #3c8dbc;
+}
+
+.form-recipients button.active {
+  background-color: #8aa4af;
+  color: #fff;
+
+  background-image: url('cssjs/icons/chevron_white.svg') !important;
+
+}
+
+.form-recipients button.selected {
+  background-color: #00a65a;
+  color: #fff;
+}
+
+
+.form-recipients .scroll {
+  overflow-y: auto;
+}
 
 </style>
 

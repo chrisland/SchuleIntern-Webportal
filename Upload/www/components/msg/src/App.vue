@@ -106,6 +106,22 @@ export default {
         }
       );
 
+
+
+
+      that.ajaxGet(
+        'rest.php/GetMsgForm/'+globals.userID,
+        //'./../testjson/GetMsgFolders.json',
+        {},
+        function (response, that) {
+          console.log(response.data);
+          
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
+        }
+      );
+
     });
 
     EventBus.$on('messages--changeFolder', data => {

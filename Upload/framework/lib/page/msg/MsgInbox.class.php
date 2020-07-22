@@ -264,9 +264,135 @@ class MsgInbox extends AbstractPage {
 
     $userID = DB::getSession()->getUserID();
 
+
+
+		MessageSendRights::init();
+
+		$fachschaftenAllowed = MessageSendRights::isFachschaftenAllowed();
+
+		$selectOptionsFachschaften = $this->getFachschaften($fachschaftenAllowed);
+
+		$selectOptionsKlassenteams = $this->getAllowedKlassenteams(true);
+
+		$selectOptionsKlassenleitung = $this->getAllowedKlassenleitungen(true);
+
+		$selectOptionsSchueler = $this->getAllowedPupils(true);
+
+
+		$selectOptionsSchuelerOwnUnterricht = $this->getSchuelerOwnUnterricht(true);
+
+		
+		
+		
+
     eval("DB::getTPL()->out(\"" . DB::getTPL()->get("msg/inbox") . "\");");
     exit(0);
 	}
+
+
+	private function getSchuelerOwnUnterricht() {
+
+
+		$unterrichte = [];
+		
+		if(MessageSendRights::isOwnUnterrichtAllowed()) {
+				
+		
+				if(DB::getSession()->isTeacher()) {
+						$unterrichte = SchuelerUnterricht::getUnterrichtForLehrer(DB::getSession()->getTeacherObject());
+				}
+				
+				if(DB::getSession()->isPupil()) {
+						$unterrichte = SchuelerUnterricht::getUnterrichtForSchueler(DB::getSession()->getPupilObject());
+				}
+				
+				if(DB::getSession()->isEltern()) {
+						
+						$schueler = DB::getSession()->getElternObject()->getMySchueler();
+						
+						for($s = 0; $s < sizeof($schueler); $s++) {
+								$unterrichts = SchuelerUnterricht::getUnterrichtForSchueler($schueler[$i]);
+								
+								$unterrichte = array_merge($unterrichte, $unterrichts);
+						}
+						
+				}
+		
+		}
+		
+		$results = [];
+		
+		for($i = 0; $i < sizeof($unterrichte); $i++) {
+			$recipient = new PupilsOfClassRecipient($unterrichte[$i]);
+			$results[] = [
+				'id' => $recipient->getSaveString(),
+				'text' => $recipient->getDisplayName(),
+				'disabled' =>  false
+			];
+		}
+		
+		return json_encode($result);
+
+	}
+
+
+	private function getAllowedPupils ($allowed) {
+
+		$result = [];
+		if($allowed) {
+			$list = MessageSendRights::getAllowedPupils();
+			for($i = 0; $i < sizeof($list); $i++) {
+				array_push( $result, [ 'id' => $list[$i]->getSaveString(), 'text' => $list[$i]->getDisplayName() ] );
+			}
+		}
+		return json_encode($result);
+
+	}
+
+
+	private function getAllowedKlassenleitungen ($allowed) {
+
+		$result = [];
+		if($allowed) {
+			$list = MessageSendRights::getAllowedKlassenleitungen();
+			for($i = 0; $i < sizeof($list); $i++) {
+				array_push( $result, [ 'id' => $list[$i]->getSaveString(), 'text' => $list[$i]->getDisplayName() ] );
+			}
+		}
+		return json_encode($result);
+
+	}
+
+
+	private function getAllowedKlassenteams ($allowed) {
+
+		$result = [];
+		if($allowed) {
+			$list = MessageSendRights::getAllowedKlassenteams();
+			for($i = 0; $i < sizeof($list); $i++) {
+				array_push( $result, [ 'id' => $list[$i]->getSaveString(), 'text' => $list[$i]->getDisplayName() ] );
+			}
+		}
+		return json_encode($result);
+
+	}
+
+	private function getFachschaften ($allowed) {
+
+		$result = [];
+		if($allowed) {
+			$list = FachschaftRecipient::getAllInstances();
+			for($i = 0; $i < sizeof($list); $i++) {
+				array_push( $result, [ 'id' => $list[$i]->getSaveString(), 'text' => $list[$i]->getDisplayName() ] );
+			}
+		}
+		return json_encode($result);
+
+	}
+
+
+
+
 	
 	public static function getSettingsDescription() {
 		$settings = [];

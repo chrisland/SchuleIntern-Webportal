@@ -96,8 +96,7 @@ class resthandler {
 
                       $action->user = DB::getSession()->getUser();
                   }
-              }
-              else {
+              } else {
                   $this->answer([], 401);
               }
           }

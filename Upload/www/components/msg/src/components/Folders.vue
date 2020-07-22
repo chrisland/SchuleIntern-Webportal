@@ -5,11 +5,11 @@
         <button class=""
           @click="clickHandler(item)"
           :class="{
-            'btn-primary' : item.folderName == 'Posteingang',
-            'btn-success' : item.folderName == 'Gesendete',
-            'btn-info' : item.folderName == 'Archiv',
-            'btn-danger' : item.folderName == 'Papierkorb',
-            'btn-outline' : item.isStandardFolder == false
+            'btn btn-blau' : item.folderName == 'Posteingang',
+            'btn btn-gruen' : item.folderName == 'Gesendete',
+            ' btn-info' : item.folderName == 'Archiv',
+            ' btn-danger' : item.folderName == 'Papierkorb',
+            'btn btn-grau' : item.isStandardFolder == false
           }" >
           {{item.folderName}}
         </button>

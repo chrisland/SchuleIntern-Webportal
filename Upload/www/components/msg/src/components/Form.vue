@@ -23,41 +23,54 @@
       <textarea class="hidden" name="messageText" v-model="messageText"></textarea>
     </form>
 
-    <div class="bar margin-b-m">
-      <button @click="clickHandlerSubmitForm()" class="btn btn-blau"><i class="fa fa-paper-plane"></i>Senden</button>
-      <button @click="clickHandlerCloseForm()" class="btn btn-blau">Abbrechen</button>
+    <div class="bar margin-b-l">
+      <button @click="clickHandlerCloseForm()" class="btn btn-grau margin-r-xs"><i class="fa fa-arrow-left"></i></button>
+      <button @click="clickHandlerClearForm()" class="btn btn-grau margin-r-xs">Abbrechen</button>
+      <button @click="clickHandlerSubmitForm()" class="btn btn-blau margin-r-xs"><i class="fa fa-paper-plane"></i>Senden</button>
+      
     </div>
 
-    <ul>
-      <li class="flex-row border-b">
+    <ul class="margin-b-m">
+      <li class="flex-row margin-b-s">
         <label class="flex-1">Empfänger:</label>
-
-        
-        <div class="flex-8">
-          <FormRecipient v-show="openRecipients"></FormRecipient>
-          <button @click="clickHandlerRecipients()" class="btn btn-grau" ><i class="fa fa-plus"></i></button>
-
-          <ul>
+        <div class="flex-6 flex-row">
+          <FormRecipient v-show="openRecipients" type="recipients"></FormRecipient>
+          <button @click="clickHandlerRecipients()" v-show="!openRecipients" class="btn btn-grau margin-r-s" ><i class="fa fa-plus"></i></button>
+          <ul v-show="!openRecipients">
             <li v-bind:key="index" v-for="(item, index) in messageRecipientsArray">{{item.name}}</li>
           </ul>
-          
         </div>
       </li>
-      <li>
-        <label>Kopieempfänger cc:</label>
-        <button class="btn btn-grau" ><i class="fa fa-plus"></i></button>
+      <li class="flex-row margin-b-s">
+        <label class="flex-1">Kopieempfänger cc:</label>
+        <div class="flex-6 flex-row">
+          <FormRecipient v-show="openCcRecipients" type="ccrecipients"></FormRecipient>
+          <button @click="clickHandlerCcRecipients()" v-show="!openCcRecipients" class="btn btn-grau margin-r-s" ><i class="fa fa-plus"></i></button>
+          <ul v-show="!openCcRecipients">
+            <li v-bind:key="index" v-for="(item, index) in messageCcRecipientsArray">{{item.name}}</li>
+          </ul>
+        </div>
       </li>
-      <li>
-        <label>Verdeckte Kopieempfänger bcc:</label>
-        <button class="btn btn-grau" ><i class="fa fa-plus"></i></button>
+      <li class="flex-row margin-b-s">
+        <label class="flex-1">Verdeckte Kopieempfänger bcc:</label>
+        <div class="flex-6 flex-row">
+          <FormRecipient v-show="openBccRecipients" type="bccrecipients"></FormRecipient>
+          <button @click="clickHandlerBccRecipients()" v-show="!openBccRecipients" class="btn btn-grau margin-r-s" ><i class="fa fa-plus"></i></button>
+          <ul v-show="!openBccRecipients">
+            <li v-bind:key="index" v-for="(item, index) in messageBccRecipientsArray">{{item.name}}</li>
+          </ul>
+        </div>
       </li>
-      <li>
-        <label>Betreff</label>
-        <input type="text" v-model="messageSubject" />
+    </ul>
+
+    <ul>
+      <li class="flex-row margin-b-m">
+        <label class="flex-1">Betreff:</label>
+        <input class="flex-6" type="text" v-model="messageSubject" />
       </li>
-      <li>
-        <label>Nachricht</label>
-        <textarea  v-model="messageText"></textarea>
+      <li class="flex-row">
+        <label class="flex-1">Nachricht:</label>
+        <textarea class="flex-6" v-model="messageText"></textarea>
       </li>
     </ul>
     
@@ -84,10 +97,20 @@ export default {
 
       messageText: '',
       messageSubject: '',
-      messageRecipients: '',
-      messageRecipientsArray: [],
+      
+      
 
-      openRecipients: false
+      openRecipients: false,
+      messageRecipientsArray: [],
+      messageRecipients: '',
+
+      openCcRecipients: false,
+      messageCcRecipientsArray: [],
+      messageCcRecipients: '',
+
+      openBccRecipients: false,
+      messageBccRecipientsArray: [],
+      messageBccRecipients: '',
 
     }
   },
@@ -101,11 +124,21 @@ export default {
 
     EventBus.$on('message--form--set-recipient', data => {
 
-      //if (data.recipients) {
+      if (data.type == 'recipients') {
         this.messageRecipients = data.recipientsString;
         this.messageRecipientsArray = data.recipientsArray;
-      //}
-      
+        this.openRecipients = false;
+
+      } else if (data.type == 'ccrecipients') {
+        this.messageCcRecipients = data.recipientsString;
+        this.messageCcRecipientsArray = data.recipientsArray;
+        this.openCcRecipients = false;
+
+      } else if (data.type == 'bccrecipients') {
+        this.messageBccRecipients = data.recipientsString;
+        this.messageBccRecipientsArray = data.recipientsArray;
+        this.openBccRecipients = false;
+      }
 
     });
 
@@ -126,22 +159,42 @@ export default {
     clickHandlerCloseForm: function () {
 
       EventBus.$emit('message--form--close', {
-        //folder: item,
       })
+
+    },
+
+    clickHandlerClearForm: function () {
+
+      this.messageText = '';
+      this.messageSubject = '';
+      
+      this.openRecipients = false;
+      this.messageRecipientsArray = [];
+      this.messageRecipients = '';
+
+      this.openCcRecipients = false;
+      this.messageCcRecipientsArray = [];
+      this.messageCcRecipients = '';
+
+      this.openBccRecipients = false;
+      this.messageBccRecipientsArray = [];
+      this.messageBccRecipients = '';
+
+      this.clickHandlerCloseForm();
+
 
     },
 
 
 
-    
-
-
-
-
     clickHandlerRecipients: function () {
-
       this.openRecipients = true;
-      
+    },
+    clickHandlerCcRecipients: function () {
+      this.openCcRecipients = true;
+    },
+    clickHandlerBccRecipients: function () {
+      this.openBccRecipients = true;
     }
  
 
@@ -151,4 +204,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+
 </style>
