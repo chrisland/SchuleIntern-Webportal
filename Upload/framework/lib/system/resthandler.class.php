@@ -27,7 +27,9 @@ class resthandler {
         'GetMsgFolders',
         'GetMsgMessages',
         'GetMsgMessage',
-        'GetMsgForm'
+        'GetMsgForm',
+        'DeleteMsgMessage',
+        'MoveMsgMessage'
     ];
   
   

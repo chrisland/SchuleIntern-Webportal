@@ -9,295 +9,218 @@ class MsgInbox extends AbstractPage {
 	
 	public function execute() {
     
-    /*
-		$folder = DB::getDB()->escapeString($_REQUEST['folder']);
-		$folderID = intval($_REQUEST['folderID']);
-		
-		$folder = MessageFolder::getFolder(DB::getSession()->getUser(), $folder, $folderID);
-		
-		if($folder == NULL) {
-			header("Location: index.php?page=MsgInbox&folder=POSTEINGANG");
-			exit(0);
-		}
-		
-		$perPage = 20;
-		$page = intval($_GET['pageNumber']);
-		
-		if($page > 0) {
-			$offset = ($page-1) * $perPage;
-		}
-		else {
-			$offset = 0;
-			$page = 1;
-		}
-		
-		$isSearch = false;
-		
-		if($_POST['searchText'] != "") {
-		    $isSearch = true;
-		    $searchString = $_REQUEST['searchText'];
-		    
-		    $messages = [];
-		    // $folder->getMessagesSearch($_REQUEST['searchText']);
-		}
-		else {
-		    $messages = $folder->getMessages($perPage, $offset);
-		}
-		
-		
-
-		$totalMessages = $folder->getMessageNumber();
-		$numberPages = ceil($totalMessages / $perPage);
-		
-		
-		if($_REQUEST['action'] == 'pageBack') {
-			if($page > 1) $page--;
-			header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL() . "&pageNumber=" . $page . "&folderID=" . $folder->getID());
-			exit();
-		}
-		
-		if($_REQUEST['action'] == 'pageForward') {
-			if($page < ($numberPages)) $page++;
-			header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL() . "&pageNumber=" . $page . "&folderID=" . $folder->getID());
-			exit();
-		}
-		
-		if($_REQUEST['action'] == 'createFolder') {
-		    
-		    $folderID = MessageFolder::createFolder($_POST['folderName']);
-		    
-		    header("Location: index.php?page=MsgInbox&folder=ANDERER&folderID=" . $folderID);
-		    exit();
-		}
-		
-		if($_REQUEST['action'] == 'deleteFolder') {
-		   		    
-            $myFolders = MessageFolder::getMyFolders(DB::getSession()->getUser());
-            
-            for($i = 0; $i < sizeof($myFolders); $i++) {
-                if($myFolders[$i]->getID() == $_REQUEST['folderID']) {
-                    $myFolders[$i]->delete();
-                }
-            }
-		    
-		    header("Location: index.php?page=MsgInbox&folder=POSTEINGANG");
-		    exit();
-		}
-		
-		
-		$ersteNummer = $offset+1;
-		
-		if($numberPages == 0) $ersteNummer = 0;
-			
-		if($numberPages == 0) $numberPages = 1;
-		
-		if($page == $numberPages) {
-			$letzteNummer = $totalMessages;
-		}
-		else {
-			$letzteNummer = $page * $perPage;
-		}
-		
-		if($_REQUEST['action'] == 'deleteSelected') {
-			$deleteIDs = [];
-			for($i = 0; $i < sizeof($messages); $i++) {
-				if($_POST['message_' . $messages[$i]->getID()] > 0) {
-					$deleteIDs[] = $messages[$i]->getID();
-				}
-			}
-			
-			$folder->deleteMessages($deleteIDs);
-			header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL() . "&folderID=" . $folder->getID());
-			exit(0);
-		}
-		
-		if($_REQUEST['action'] == 'markAsRead') {
-		    $markIDs = [];
-		    for($i = 0; $i < sizeof($messages); $i++) {
-		        if($_POST['message_' . $messages[$i]->getID()] > 0) {
-		            $markIDs[] = $messages[$i]->getID();
-		        }
-		    }
-		    
-		    
-		    $folder->markReadStatus($markIDs, true);
-		    header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL() . "&folderID=" . $folder->getID());
-		    exit(0);
-		}
-		
-		if($_REQUEST['action'] == 'markAsUnRead') {
-		    $markIDs = [];
-		    for($i = 0; $i < sizeof($messages); $i++) {
-		        if($_POST['message_' . $messages[$i]->getID()] > 0) {
-		            $markIDs[] = $messages[$i]->getID();
-		        }
-		    }
-		    
-		    
-		    
-		    $folder->markReadStatus($markIDs, false);
-		    header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL() . "&folderID=" . $folder->getID());
-		    exit(0);
-		}
-		
-		$folders = MessageFolder::getMyFolders(DB::getSession()->getUser());
-		
-		
-		if($_REQUEST['action'] == 'moveSelected') {
-		    
-		    
-		    // ACHTUNG: Nachrichten nicht in Gesendete verschieben lassen!
-		    		    
-		    $moveIDs = [];
-		    for($i = 0; $i < sizeof($messages); $i++) {
-		        if($_POST['message_' . $messages[$i]->getID()] > 0) {
-		            $moveIDs[] = $messages[$i]->getID();
-		        }
-		    }
-		    
-		    $toFolder = null;
-		    
-		    if($_REQUEST['moveToFolderID'] == 'POSTEINGANG') {
-		        $toFolder = MessageFolder::getFolder(DB::getSession()->getUser(), "POSTEINGANG", 0);
-		    }
-		    
-		    if($_REQUEST['moveToFolderID'] == 'ARCHIV') {
-		        $toFolder = MessageFolder::getFolder(DB::getSession()->getUser(), "ARCHIV", 0);
-		    }
-		    
-		    if($toFolder == null) {
-    		    for($i = 0; $i < sizeof($folders); $i++) {        // In eigenen Ordnern suchen
-    		        if($_REQUEST['moveToFolderID'] == $folders[$i]->getID()) {
-    		            $toFolder = $folders[$i];
-    		        }
-    		    }
-		    }
-		    		    
-		    if($toFolder != null) $folder->moveMessages($moveIDs, $toFolder);
-		    
-		    header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL());
-		    exit(0);
-		}
-		
-		
-		if($_REQUEST['action'] == 'archiveSelected') {
-		    
-		    $moveIDs = [];
-		    for($i = 0; $i < sizeof($messages); $i++) {
-		        if($_POST['message_' . $messages[$i]->getID()] > 0) {
-		            $moveIDs[] = $messages[$i]->getID();
-		        }
-		    }
-		    
-		    $toFolder = MessageFolder::getFolder(DB::getSession()->getUser(), 'ARCHIV', 0);
-		    
-		    $folder->moveMessages($moveIDs, $toFolder);
-		    
-		    header("Location: index.php?page=MsgInbox&folder=" . $folder->getFolderSQL());
-		    exit(0);
-		}
-		
-		
-		
-		if($folder->getFolderSQL() == 'GESENDETE') {
-		    $isSentFolder = true;
-		}
-		else $isSentFolder = false;
-		
-		
-		$messageHTML = "";
-		for($i = 0; $i < sizeof($messages); $i++) {
-			$message = $messages[$i];
-			
-			if($isSentFolder) {
-			    $recipients = [];
-			    
-			    $recipientsObjects = $message->getRecipients();
-			    
-			    for($r = 0; $r < sizeof($recipientsObjects); $r++) {
-			        $recipients[] = $recipientsObjects[$r]->getDisplayName();
-			    }
-      }
-      
-
-      eval("\$messageHTML .= \"" . DB::getTPL()->get("msg/inbox") . "\";");
-      
-		}
-		
-		// Ordner Status
-		
-		$posteingangOrdner = MessageFolder::getFolder(DB::getSession()->getUser(), "POSTEINGANG", 0);
-		$gesendetOrdner = MessageFolder::getFolder(DB::getSession()->getUser(), "GESENDET", 0);
-		$papierkorbOrdner = MessageFolder::getFolder(DB::getSession()->getUser(), "PAPIERKORB", 0);
-		$archivOrdner = MessageFolder::getFolder(DB::getSession()->getUser(), "ARCHIV", 0);
-				
-		// Eigene Order
-		
-		
-		$ownFolders = "";
-		
-		$selectFolders = "<option value=\"POSTEINGANG\">Posteingang</option>";
-		$selectFolders .= "<option value=\"ARCHIV\">Archiv</option>";
-		
-		for($i = 0; $i < sizeof($folders); $i++) {
-		    if($_REQUEST['folderID'] == $folders[$i]->getID() && $_REQUEST['folder'] == 'ANDERER') $ownFolders .= '<li class="active">';
-		    else $ownFolders .= '<li>';
-		    
-		    $ownFolders .= '
-                <a href="index.php?page=MsgInbox&folder=ANDERER&folderID=' . $folders[$i]->getID() . '">
-
-                    <i class="fa fa-folder"></i> ' . $folders[$i]->getName() . '                 
-
-
-                    <span class="label label-primary pull-right">' . $folders[$i]->getUnreadMessageNumber() . '</span>
-                </a></li>';
-		    
-		    $selectFolders .= "<option value=\"" . $folders[$i]->getID() . "\">" . $folders[$i]->getName() . "</option>";
-		}
-		
-		eval("\$FRAMECONTENT = \"" . DB::getTPL()->get("messages/inbox/index") . "\";");
-		eval("DB::getTPL()->out(\"" . DB::getTPL()->get("messages/inbox/frame") . "\");");
-    
-    */
-
-    //eval("\$FRAMECONTENT = \"" . DB::getTPL()->get("msg/inbox") . "\";");
-
     $userID = DB::getSession()->getUserID();
-
 
 
 		MessageSendRights::init();
 
 		$fachschaftenAllowed = MessageSendRights::isFachschaftenAllowed();
+		$canRequestReadConfirmation = MessageSendRights::canRequestReadingConfirmation();
+		$canAskQuestions = MessageSendRights::canAskQuestions();
 
 		$selectOptionsFachschaften = $this->getFachschaften($fachschaftenAllowed);
-
 		$selectOptionsKlassenteams = $this->getAllowedKlassenteams(true);
-
 		$selectOptionsKlassenleitung = $this->getAllowedKlassenleitungen(true);
-
 		$selectOptionsSchueler = $this->getAllowedPupils(true);
-
-
 		$selectOptionsSchuelerOwnUnterricht = $this->getSchuelerOwnUnterricht(true);
+		$selectOptionsSchuelerKlassen = $this->getSchuelerKlassen();
+	
+		if( sizeof(MessageSendRights::getAllowedParents()) > 0 ) {
+			$selectOptionsElternSingel = $this->getElternSingel();
+		}
 
+		if(MessageSendRights::isAllUnterrichtAllowed()) {
+			$selectOptionsSchuelerAllUnterricht = $this->getSchuelerAllUnterricht(true);
+		}
+
+		if(MessageSendRights::isOwnUnterrichtAllowed()) {
+			$selectOptionsElternOwnUnterricht = $this->getElternOwnUnterricht();
+		}
 		
-		
-		
+		if(MessageSendRights::isAllUnterrichtAllowed()) {
+			$selectOptionsElternAllUnterricht = $this->getElternAllUnterricht();
+		}
 
     eval("DB::getTPL()->out(\"" . DB::getTPL()->get("msg/inbox") . "\");");
     exit(0);
 	}
 
 
-	private function getSchuelerOwnUnterricht() {
+	private function getElternAllUnterricht () {
 
+		/*
+		$unterrichte = [];
+		
+		//$unterrichte = SchuelerUnterricht::searchInBezeichnung($_REQUEST['term']);
+						
+		$responseData = [];
+		
+		for($i = 0; $i < sizeof($unterrichte); $i++) {
+				
+			$recipient = new ParentsOfPupilsOfClassRecipient($unterrichte[$i]);
+			
+			$responseData[] = [
+				'id' => $recipient->getSaveString(),
+				'text' => $recipient->getDisplayName(),
+				'disabled' =>  false
+			];
+		}
+		
+		return json_encode($responseData);
+		*/
+
+		return json_encode( array() );
+
+	}
+
+	private function getElternOwnUnterricht() {
+
+		$unterrichte = [];
+
+		if(DB::getSession()->isTeacher()) {
+			$unterrichte = SchuelerUnterricht::getUnterrichtForLehrer(DB::getSession()->getTeacherObject());
+		}
+		
+		if(DB::getSession()->isPupil()) {
+			$unterrichte = SchuelerUnterricht::getUnterrichtForSchueler(DB::getSession()->getPupilObject());
+		}
+		
+		if(DB::getSession()->isEltern()) {
+			$schueler = DB::getSession()->getElternObject()->getMySchueler();
+			for($s = 0; $s < sizeof($schueler); $s++) {
+				$unterrichts = SchuelerUnterricht::getUnterrichtForSchueler($schueler[$i]);
+				$unterrichte = array_merge($unterrichte, $unterrichts);
+			}
+		}
+
+		$responseData = [];
+
+		for($i = 0; $i < sizeof($unterrichte); $i++) {
+	
+			$recipient = new ParentsOfPupilsOfClassRecipient($unterrichte[$i]);
+			
+			$responseData[] = [
+				'id' => $recipient->getSaveString(),
+				'text' => $recipient->getDisplayName(),
+				'disabled' =>  false
+			];
+
+		}
+		
+		return json_encode($responseData);
+		
+	}
+
+	private function getElternSingel() {
+
+		$parentsRecipients = MessageSendRights::getAllowedParents();
+		        
+		$responseData = [];
+		
+		for($i = 0; $i < sizeof($parentsRecipients); $i++) {
+						
+			$responseData[] = [
+				'id' => $parentsRecipients[$i]->getSaveString(),
+				'text' => $parentsRecipients[$i]->getDisplayName(),
+				'disabled' =>  !$parentsRecipients[$i]->isAvailible()
+			];
+	
+		}
+		
+		
+		return json_encode($responseData);
+		
+	}
+
+	private function getSchuelerKlassen() {
+
+		$pupilRecipients = MessageSendRights::getAllowedPupilGrades();
+		
+		$selectIDs = [];
+		
+		for($i = 0; $i < sizeof($pupilRecipients); $i++) {
+			
+			$ks = $pupilRecipients[$i]->getKlasse()->getKlassenstufe();
+			//if($ks == '') $ks = 'Andere Klassen';
+			//else $ks = $ks . ". Klassen";
+			
+			//$selectIDs[$ks][] = array(
+			$selectIDs[] = array(
+				"id" => $pupilRecipients[$i]->getSaveString(),
+				"text" => $pupilRecipients[$i]->getKlasse()->getKlassenName()
+			);
+
+		}
+
+		// echo "<pre>";
+		// print_r($selectIDs );
+		// echo "</pre>";
+
+		return json_encode($selectIDs);
+
+	}
+
+	private function getSchuelerAllUnterricht() {
+		
+
+		//$unterrichte = SchuelerUnterricht::getAll();
+
+		// $daten = DB::getDB()->query("SELECT * FROM unterricht JOIN faecher ON unterrichtFachID=fachID ORDER BY fachKurzForm");
+		
+		// $us = [];
+		
+		// while($u = DB::getDB()->fetch_array($daten)) {
+		// 	$us[] = new SchuelerUnterricht($u);
+
+		// // 	echo "<pre>";
+		// // print_r($u);
+		// // echo "</pre>";
+
+		// }
+		
+		
+		// echo "<pre>";
+		// print_r($us);
+		// echo "</pre>";
+
+
+		/*
+		//$unterrichte = [];
+		$unterrichte = SchuelerUnterricht::getAll();
+
+		echo "<pre>";
+		print_r($unterrichte);
+		echo "</pre>";
+		//exit;
+
+
+		$responseData = [
+				'results' => []
+		];
+		
+		for($i = 0; $i < sizeof($unterrichte); $i++) {
+			$recipient = new PupilsOfClassRecipient($unterrichte[$i]);
+			
+			$responseData['results'][] = [
+				'id' => $recipient->getSaveString(),
+				'text' => $recipient->getDisplayName(),
+				'disabled' =>  false
+			];
+		}
+		
+		return json_encode($responseData);
+		*/
+		
+		return json_encode( array() );
+	}
+
+
+	private function getSchuelerOwnUnterricht() {
 
 		$unterrichte = [];
 		
 		if(MessageSendRights::isOwnUnterrichtAllowed()) {
 				
-		
 				if(DB::getSession()->isTeacher()) {
 						$unterrichte = SchuelerUnterricht::getUnterrichtForLehrer(DB::getSession()->getTeacherObject());
 				}
@@ -307,22 +230,18 @@ class MsgInbox extends AbstractPage {
 				}
 				
 				if(DB::getSession()->isEltern()) {
-						
 						$schueler = DB::getSession()->getElternObject()->getMySchueler();
-						
 						for($s = 0; $s < sizeof($schueler); $s++) {
 								$unterrichts = SchuelerUnterricht::getUnterrichtForSchueler($schueler[$i]);
-								
 								$unterrichte = array_merge($unterrichte, $unterrichts);
 						}
-						
 				}
-		
 		}
 		
 		$results = [];
 		
 		for($i = 0; $i < sizeof($unterrichte); $i++) {
+
 			$recipient = new PupilsOfClassRecipient($unterrichte[$i]);
 			$results[] = [
 				'id' => $recipient->getSaveString(),
@@ -330,8 +249,8 @@ class MsgInbox extends AbstractPage {
 				'disabled' =>  false
 			];
 		}
-		
-		return json_encode($result);
+
+		return json_encode($results);
 
 	}
 

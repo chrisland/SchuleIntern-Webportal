@@ -1,9 +1,15 @@
 <template>
   <div class="folders flex-2">
+
+    <div class="toolbar">
+      <button class="btn btn-blau"
+          @click="clickHandlerNewMessage()">Neue Nachricht</button>
+    </div>
+    
     <ul>
       <li v-bind:key="index" v-for="(item, index) in folders">
         <button class=""
-          @click="clickHandler(item)"
+          @click="clickHandlerFolder(item)"
           :class="{
             'btn btn-blau' : item.folderName == 'Posteingang',
             'btn btn-gruen' : item.folderName == 'Gesendete',
@@ -32,7 +38,15 @@ export default {
   },
   methods: {
 
-    clickHandler: function (item) {
+    clickHandlerNewMessage: function () {
+
+      EventBus.$emit('message--form', {
+        //folder: item,
+      })
+
+    },
+
+    clickHandlerFolder: function (item) {
 
       EventBus.$emit('messages--changeFolder', {
         folder: item,

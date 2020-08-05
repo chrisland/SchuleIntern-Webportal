@@ -369,7 +369,7 @@ class MessageCompose extends AbstractPage {
 		    case  'uploadAttachment':
 
 		        $upload = FileUpload::uploadOfficeFilesPicturesTextAndZip('attachmentFile','');
-		        
+						
 		        $result = [
 		            'uploadOK' => false,
 		            'attachmentID' => 0,
@@ -490,7 +490,10 @@ class MessageCompose extends AbstractPage {
 				}
 				
 				
-				if(MessageSendRights::canRequestReadingConfirmation() && $_REQUEST['readConfirmation'] > 0) $messageSender->setNeedConfirmation();
+				if( MessageSendRights::canRequestReadingConfirmation()
+					&& $_REQUEST['readConfirmation'] == true ) {
+						$messageSender->setNeedConfirmation();
+				}
 				
 				
 				$isReply = false;
@@ -527,8 +530,7 @@ class MessageCompose extends AbstractPage {
 				    }
 				}
 				
-						
-				if($_REQUEST['dontAllowAnser'] > 0) {
+				if( $_REQUEST['dontAllowAnser'] == 'true' ) {
 					$messageSender->dontAllowAnswer();
 				}
 				

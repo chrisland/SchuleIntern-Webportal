@@ -3,10 +3,10 @@
     <table class="noselect">
       <thead>
         <tr>
+          <td><span @click="selectAllToggle()">Select all</span></td>
           <td v-bind:key="index" v-for="(item, index) in columns"
-            @click="sortBy(item)"
             :class="{ active: sortKey == item }">
-            {{columsHeader[index]}}
+            <span v-if="columsHeader[index]" @click="sortBy(item)">{{columsHeader[index]}}</span>
             <i class="fa "
               :class="{
                 'fa-sort-down': sortOrders[item] == 1 ,
@@ -17,6 +17,8 @@
       </thead>
       <tbody>
         <tr v-bind:key="index" v-for="(entry, index) in  filteredlist" >
+          
+          <td><input type="checkbox" :checked="entry.selected" @click="clickHandler(entry, {shiftKey: true})"/></td>
           <td v-bind:key="index" v-for="(item, index) in columns" >
 
             <i v-if="item == 'isRead' && entry[item] == 1" class=""></i>
@@ -95,6 +97,15 @@ export default {
           }
           return (a === b ? 0 : a > b ? 1 : -1) * order
         })
+
+        for (var i = 0; i < list.length; i++) {
+          for (var j = 0; j < this.clickHandlerList.length; j++) {
+            if (list[i].id == this.clickHandlerList[j].id) {
+              list.selected = true;
+            }
+          } 
+        }
+
       }
       
       
@@ -111,22 +122,81 @@ export default {
     }
   },
   methods: {
+
+    selectAllToggle: function () {
+
+      console.log('toggle', this.clickHandlerList.length);
+
+      if (this.clickHandlerList.length > 1) {
+        this.clickHandlerList = [];
+        for (var i = 0; i < this.filteredlist.length; i++) {
+          this.filteredlist[i].selected = false;
+        }
+
+      } else {
+        // for (var i = 0; i < this.filteredlist.length; i++) {
+        //   this.clickHandlerList.push(this.filteredlist[i]);
+        //   this.filteredlist[i].selected = true;
+        // }
+        this.clickHandlerList = this.filteredlist;
+      }
+      
+
+    },
+
     clickHandler: function(item, $event) {
+
 
       if (!item) {
         return false;
       }
-      this.clickHandlerList = [ item ];
-      //TODO: click mit shift -> zwei gleizeitig auswählen
-      EventBus.$emit('message--open', {
-        message: this.clickHandlerList[0],
-      })
 
-      if (this.clickHandlerNode) {
-        this.clickHandlerNode.classList.remove('text-red');
-      }  
-      this.clickHandlerNode = $event.target.parentNode.parentNode;
-      this.clickHandlerNode.classList.add('text-red');
+      if ( $event.shiftKey ) {
+
+        var found = false;
+        for (var i = 0; i < this.clickHandlerList.length; i++) {
+          if (this.clickHandlerList[i].id == item.id) {
+
+            this.clickHandlerList[i].selected = false;
+
+            var index = this.clickHandlerList.indexOf( this.clickHandlerList[i] );
+            this.clickHandlerList.splice(index, 1);
+            found = true;
+          }
+        }
+        if (found == false) {
+
+          item.selected = true;
+          this.clickHandlerList.push(item);
+        }
+
+        EventBus.$emit('message--close', {})
+
+      } else {
+
+        if (this.clickHandlerList) {
+          for (var i = 0; i < this.clickHandlerList.length; i++) {
+            this.clickHandlerList[i].selected = false;
+          }
+        }  
+        item.selected = true;
+
+        this.clickHandlerList = [ item ];
+
+        EventBus.$emit('message--open', {
+          message: this.clickHandlerList[0],
+        })
+
+      }
+
+
+      EventBus.$emit('message--list', {
+        list: this.clickHandlerList
+      })
+      
+      
+
+      
 
     },
     sortBy: function (key) {

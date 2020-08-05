@@ -2,9 +2,19 @@
   <div class="messages flex-10">
     <div class="toolbar flex-row"> 
       <div class="flex-9">
-        <button
-          class="btn btn-blau"
-          @click="clickHandler()">Neue Nachricht</button>
+
+          <button v-on:click="messageDelete()">Löschen</button>
+
+          <button v-on:click="">Gelesen</button>
+          <button v-on:click="">Ungelesen</button>
+
+
+          <select v-model="messageMoveSelected">
+            <option v-bind:key="index" v-for="(item, index) in folders"
+              :value="item">{{item.folderName}}</option>
+          </select>
+          <button v-on:click="messageMove()">Verschieben</button>
+          
         
       </div>
       <form id="search" class="3">
@@ -32,7 +42,9 @@ export default {
     GridTemplate
   },
   props: {
-    messages: Array
+    messages: Array,
+    folders: Array,
+    messageMoveSelected: String
   },
   data: function () {
     return {
@@ -47,13 +59,20 @@ export default {
   },
   methods: {
 
-    clickHandler: function () {
+    messageMove: function () {
 
-      EventBus.$emit('message--form', {
-        //folder: item,
-      })
+      EventBus.$emit('message--move', {
+        toFolder: this.messageMoveSelected
+      });
+
+    },
+
+    messageDelete: function () {
+
+      EventBus.$emit('message--delete', {});
 
     }
+    
 
   }
 }

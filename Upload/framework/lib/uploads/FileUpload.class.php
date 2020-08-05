@@ -397,21 +397,21 @@ class FileUpload {
 	}
 
 	public static function uploadOfficeFilesPicturesTextAndZip($fieldName, $fileName) {
-        $mimes = self::$mimeTypesMSOffice;
+	
+		$mimes = self::$mimeTypesMSOffice;
+		$mimes[] = 'application/pdf';
+		$mimes[] = 'text/csv';
+		$mimes[] = 'text/plain';
+		$mimes[] = 'application/zip';
 
-        $mimes[] = 'application/pdf';
-        $mimes[] = 'text/csv';
-	    $mimes[] = 'text/plain';
-        $mimes[] = 'application/zip';
+		$mimes = array_merge($mimes, self::$mimesPicture);
 
-        $mimes = array_merge($mimes, self::$mimesPicture);
+		for($i = 0; $i < sizeof(self::$mimesPicture); $i++) {
+			$mimes[] = self::$mimesPicture[$i];
+		}
 
-        for($i = 0; $i < sizeof(self::$mimesPicture); $i++) {
-            $mimes[] = self::$mimesPicture[$i];
-        }
-
-        return self::uploadFileImpl($fieldName, $mimes, $fileName);
-    }
+		return self::uploadFileImpl($fieldName, $mimes, $fileName);
+	}
 	
 	public static function uploadOfficeDocument($fieldName, $fileName) {
 		return self::uploadFileImpl($fieldName, self::$mimeTypesMSOffice, $fileName);
@@ -520,7 +520,7 @@ class FileUpload {
 		$mime = null;
 		
 		if($fileName == '') $fileName = $_FILES[$fieldName]['name'];
-		
+
 		$ext = strtolower(array_pop(explode('.',$_FILES[$fieldName]['name'])));
 		
 		if (function_exists('finfo_open')) {

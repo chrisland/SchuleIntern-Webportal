@@ -1,7 +1,7 @@
 {$this->header}
 
 
-<div id=app></div>
+
 <script>
   var globals = {
     userID: $userID,
@@ -9,10 +9,25 @@
     selectOptionsKlassenteams: $selectOptionsKlassenteams,
     selectOptionsKlassenleitung: $selectOptionsKlassenleitung,
     selectOptionsSchueler: $selectOptionsSchueler,
-    selectOptionsSchuelerOwnUnterricht: $selectOptionsSchuelerOwnUnterricht
+    selectOptionsSchuelerOwnUnterricht: $selectOptionsSchuelerOwnUnterricht,
+    selectOptionsSchuelerAllUnterricht: $selectOptionsSchuelerAllUnterricht,
+    selectOptionsSchuelerKlassen: $selectOptionsSchuelerKlassen,
+    selectOptionsElternSingel: $selectOptionsElternSingel,
+    selectOptionsElternOwnUnterricht: $selectOptionsElternOwnUnterricht,
+    selectOptionsElternAllUnterricht: $selectOptionsElternAllUnterricht,
+
+    acl: {
+      canRequestReadConfirmation: $canRequestReadConfirmation
+    }
+
   }
   
+  console.log(globals);
 </script>
+
+<div id=app></div>
+
+
 <script src=components/msg/dist/js/chunk-vendors.js></script>
 <script src=components/msg/dist/js/app.js></script>
 

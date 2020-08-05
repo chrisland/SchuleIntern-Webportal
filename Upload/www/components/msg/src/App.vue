@@ -8,7 +8,7 @@
         'height_35' : show.preview
       }">
       <Folders v-bind:folders="folders"></Folders>
-      <Messages v-bind:messages="messages"></Messages>
+      <Messages v-bind:messages="messages" v-bind:folders="folders"></Messages>
     </div>
     <div v-show="show.preview" class="preview flex-row">
       <Bar></Bar>
@@ -26,10 +26,10 @@
 
 
 //console.log('globals',globals);
-var globals = false;
-globals = globals || {
-  userID:  1608
-};
+// var globals = false;
+// globals = globals || {
+//   userID:  1608
+// };
 
 import Folders from './components/Folders.vue'
 import Messages from './components/Messages.vue'
@@ -60,13 +60,98 @@ export default {
         list: true,
         preview: false,
         form: false
-      }
+      },
+
+      activeFolder: false,
+      handlerClickList: []
     }
   },
   created: function () {
 
 
     var that = this;
+
+    EventBus.$on('message--move', data => {
+      
+      if (!data.toFolder.folderName && !data.toFolder.folderID) {
+        return false;
+      }
+
+      var url = 'rest.php/MoveMsgMessage/'+globals.userID+'/'+encodeURIComponent(data.toFolder.folderName)+'/'+data.toFolder.folderID;
+      that.ajaxPost(
+        url,
+        //'./../testjson/GetMsgFolders.json',
+        {
+          list: JSON.stringify(this.handlerClickList)
+        },
+        {},
+        function (response, that) {
+          //console.log(response.data);
+
+          if (response.data.done == true) {
+
+            for (var i = 0; i < that.messages.length; i++) {
+              for (var j = 0; j < that.handlerClickList.length; j++) {
+                if (that.messages[i].id == that.handlerClickList[j].id) {
+                  var index = that.messages.indexOf(that.handlerClickList[j]);
+                  that.messages.splice(index, 1);
+                }
+              }
+            }
+
+          } else {
+            that.errorMsg = 'Beim Verschieben ist leider ein Fehler aufgetreten. (Code:Ajax Move Message 404)'
+          }
+
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Move Message 404)'
+        }
+      );
+
+
+    });
+
+    EventBus.$on('message--delete', data => {
+
+      var url = 'rest.php/DeleteMsgMessage/'+globals.userID+'/'+this.activeFolder.folderName+'/'+this.activeFolder.folderID;
+      that.ajaxPost(
+        url,
+        //'./../testjson/GetMsgFolders.json',
+        {
+          list: JSON.stringify(this.handlerClickList)
+        },
+        {},
+        function (response, that) {
+          //console.log(response.data);
+
+          if (response.data.done == true) {
+
+            for (var i = 0; i < that.messages.length; i++) {
+              for (var j = 0; j < that.handlerClickList.length; j++) {
+                if (that.messages[i].id == that.handlerClickList[j].id) {
+                  var index = that.messages.indexOf(that.handlerClickList[j]);
+                  that.messages.splice(index, 1);
+                }
+              }
+            }
+
+          } else {
+            that.errorMsg = 'Beim Löschen ist leider ein Fehler aufgetreten. (Code:Ajax Delete Message 404)'
+          }
+
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Delete Message 404)'
+        }
+      );
+
+
+    });
+
+    EventBus.$on('message--list', data => {
+      this.handlerClickList = data.list;
+    });
 
     EventBus.$on('message--open', data => {
 
@@ -91,6 +176,15 @@ export default {
 
     });
 
+    EventBus.$on('message--close', data => {
+
+      that.message = false;
+      that.show.list = true;
+      that.show.preview = false;
+      that.showform = false;
+      
+    });
+
 
     EventBus.$on('folders--get', data => {
 
@@ -109,18 +203,18 @@ export default {
 
 
 
-      that.ajaxGet(
-        'rest.php/GetMsgForm/'+globals.userID,
-        //'./../testjson/GetMsgFolders.json',
-        {},
-        function (response, that) {
-          console.log(response.data);
+      // that.ajaxGet(
+      //   'rest.php/GetMsgForm/'+globals.userID,
+      //   //'./../testjson/GetMsgFolders.json',
+      //   {},
+      //   function (response, that) {
+      //     console.log('rest.php/GetMsgForm/',response.data);
           
-        },
-        function (error) {
-          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
-        }
-      );
+      //   },
+      //   function (error) {
+      //     that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
+      //   }
+      // );
 
     });
 
@@ -135,6 +229,9 @@ export default {
       } else {
         url += '/'+data.folder.folderID;
       }
+
+      this.activeFolder = data.folder;
+
       that.ajaxGet(
         url,
         //'./../testjson/GetMsgMessages.json',
@@ -143,7 +240,7 @@ export default {
           //console.log(response);
           
           if (response.data) {
-            console.log(response.data);
+            //console.log(response.data);
             that.messages = response.data;
             that.message = {};
             that.show.list = true;
@@ -176,7 +273,7 @@ export default {
             that.message = {};
 
             
-            console.log(response.data);
+            //console.log('rest.php/GetMsgForm/',response.data);
             
           } else {
             that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Form Data)'
@@ -221,6 +318,33 @@ export default {
       var that = this;
 
       axios.get(url, {
+        params: params
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        if (callback && typeof callback === 'function') {
+          callback(response, that);
+        }
+      })
+      .catch(function (resError) {
+        //console.log(error);
+        if (resError && typeof error === 'function') {
+          error(resError);
+        }
+      })
+      .finally(function () {
+        // always executed
+        if (allways && typeof allways === 'function') {
+          allways();
+        }
+      });  
+      
+    },
+    ajaxPost: function (url, data, params, callback, error, allways) {
+
+      var that = this;
+
+      axios.post(url, data, {
         params: params
       })
       .then(function (response) {

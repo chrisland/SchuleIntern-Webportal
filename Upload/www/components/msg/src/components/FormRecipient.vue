@@ -5,7 +5,8 @@
       <button @click="clickHandlerRecipientsTabOpen('tab-1')" v-bind:class="isTabActive('tab-1')" class="btn chevron">Allgemein</button>
       <button @click="clickHandlerRecipientsTabOpen('tab-2')" v-bind:class="isTabActive('tab-2')" class="btn chevron">Lehrer</button>
       <button @click="clickHandlerRecipientsTabOpen('tab-3')" v-bind:class="isTabActive('tab-3')" class="btn chevron">Schüler</button>
-      <button class="btn">Eltern</button>
+      <button @click="clickHandlerRecipientsTabOpen('tab-4')" v-bind:class="isTabActive('tab-4')" class="btn chevron">Eltern</button>
+      <button @click="clickHandlerRecipientsTabOpen('tab-5')" v-bind:class="isTabActive('tab-5')" class="btn chevron">Sonstige</button>
     </div>
     <div class="flex-1 border-r">
       <div class="tab flex scroll" v-show="recipientsTabOpen == 'tab-1'">
@@ -23,15 +24,31 @@
       </div>
       <div class="tab flex scroll" v-show="recipientsTabOpen == 'tab-3'">
         <button @click="clickHandlerRecipientsSchueler('list-1')" v-bind:class="isListActive('list-1')" class="btn chevron">Alle</button>
-        <button @click="clickHandlerRecipientsSchuelerOwnUnterricht('list-2')" v-bind:class="isListActive('list-2')" class="btn chevron">Aus dem eigenen Unterricht</button>
+        <button @click="clickHandlerRecipientsSchuelerKlassen('list-2')" v-bind:class="isListActive('list-2')" class="btn chevron">Klassen</button>
+        <button @click="clickHandlerRecipientsSchuelerOwnUnterricht('list-3')" v-bind:class="isListActive('list-3')" class="btn chevron">Des eigenen Unterrichts</button>
+        <button @click="clickHandlerRecipientsSchuelerAllUnterricht('list-4')" v-bind:class="isListActive('list-4')" class="btn chevron">Aller Unterrichte</button>
+      </div>
+      <div class="tab flex scroll" v-show="recipientsTabOpen == 'tab-4'">
+        <button @click="clickHandlerRecipientsElternKlassen('list-1')" v-bind:class="isListActive('list-1')" class="btn chevron">Eltern der ganzen Klasse</button>
+        <button @click="clickHandlerRecipientsElternSingel('list-2')" v-bind:class="isListActive('list-2')" class="btn chevron">Einzelne Eltern</button>
+        <button @click="clickHandlerRecipientsOwnUnterricht('list-3')" v-bind:class="isListActive('list-3')" class="btn chevron">Eltern der Schüler des eigenen Unterrichts</button>
+        <button @click="clickHandlerRecipientsAllUnterricht('list-4')" v-bind:class="isListActive('list-4')" class="btn chevron">Eltern der Schüler aller Unterrichte</button>
+      </div>
+      <div class="tab flex scroll" v-show="recipientsTabOpen == 'tab-5'">
+        gruppe,,,,
       </div>
     </div>
-    <div class="flex-1 flex border-r margin-r-xs height_35 scroll" >
+    <div class="flex-1 flex border-r margin-r-xs height_35 " >
+      <div v-show="recipientsResultSearched">
+        <input type="search" v-model="searchQuery" placeholder="Suche..." />
+        <button @click="clickHandlerSearchClear()">Clear</button>
+      </div>
 
-      <button v-bind:key="index" v-for="(item, index) in recipientsResult"
-        @click="clickHandlerRecipientsSelect(item)"
-        v-bind:class="isRecipientSelected(item)" class="btn">{{item.text}}</button>
-
+      <div class="scroll">
+        <button v-bind:key="index" v-for="(item, index) in recipientsResultSearched"
+          @click="clickHandlerRecipientsSelect(item)"
+          v-bind:class="isRecipientSelected(item)" class="btn">{{item.text}}</button>
+      </div>
     </div>
     <div class="flex-1 flex border-l scroll">
 
@@ -73,10 +90,29 @@ export default {
 
       recipientsListOpen: '',
 
+      searchQuery: ''
     }
   },
   computed: {
-    
+
+
+    recipientsResultSearched: function () {
+ 
+      if (this.searchQuery && this.recipientsResult) {
+
+        let list = this.recipientsResult;
+        let query = this.searchQuery;
+
+        list = list.filter(function (row) {
+          return Object.keys(row).some(function (key) {
+            return String(row[key]).toLowerCase().indexOf(query) > -1
+          })
+        })
+        return list;
+      }
+      
+      return this.recipientsResult;
+    }
 
   },
   
@@ -85,6 +121,11 @@ export default {
   },
   methods: {
 
+    clickHandlerSearchClear: function () {
+
+      this.searchQuery = '';
+
+    },
     clickHandlerRecipientsTabOpen: function (tab) {
 
       this.recipientsTabOpen = tab;
@@ -117,29 +158,54 @@ export default {
 
       this.recipientsResult = globals.selectOptionsFachschaften;
       this.recipientsListOpen = list;
-
     },
     clickHandlerKlassenteam: function (list) {
 
       this.recipientsResult = globals.selectOptionsKlassenteams;
       this.recipientsListOpen = list;
-
     },
     clickHandlerKlassenleitung: function (list) {
 
       this.recipientsResult = globals.selectOptionsKlassenleitung;
       this.recipientsListOpen = list;
-
     },
     clickHandlerRecipientsSchueler:  function (list) {
       this.recipientsResult = globals.selectOptionsSchueler;
       this.recipientsListOpen = list;
-      
     },
     clickHandlerRecipientsSchuelerOwnUnterricht:  function (list) {
       this.recipientsResult = globals.selectOptionsSchuelerOwnUnterricht;
       this.recipientsListOpen = list;
-      
+    },
+
+    clickHandlerRecipientsSchuelerAllUnterricht:  function (list) {
+      this.recipientsResult = globals.selectOptionsSchuelerAllUnterricht;
+      this.recipientsListOpen = list;
+    },
+
+    clickHandlerRecipientsSchuelerKlassen:  function (list) {
+      this.recipientsResult = globals.selectOptionsSchuelerKlassen;
+      this.recipientsListOpen = list;
+    },
+
+    clickHandlerRecipientsElternSingel:  function (list) {
+      this.recipientsResult = globals.selectOptionsElternSingel;
+      this.recipientsListOpen = list;
+    },
+
+    clickHandlerRecipientsOwnUnterricht:  function (list) {
+      this.recipientsResult = globals.selectOptionsElternOwnUnterricht;
+      this.recipientsListOpen = list;
+    },
+
+    clickHandlerRecipientsAllUnterricht:  function (list) {
+      this.recipientsResult = globals.selectOptionsElternAllUnterricht;
+      this.recipientsListOpen = list;
+    },
+
+    clickHandlerRecipientsElternKlassen:  function (list) {
+      //this.recipientsResult = globals.selectOptionsElternAllUnterricht;
+      this.recipientsListOpen = list;
     },
 
     
