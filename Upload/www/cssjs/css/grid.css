@@ -42,10 +42,6 @@
 }
 
 
-.height_35 {
-  max-height: 35vh !important;
-}
-
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -57,11 +53,29 @@
                                   supported by Chrome, Opera and Firefox */
 }
 
+
+
+.height_35 {
+  max-height: 35vh !important;
+}
+
+.width-form {
+  width: 20rem;
+}
+
+.padding-m {
+  padding: 1.3rem;
+}
+
 .margin-r-xs {
   margin-right: 0.3rem;
 }
 .margin-r-s {
   margin-right: 0.6rem;
+}
+
+.margin-l-s {
+  margin-left: 0.6rem;
 }
 
 

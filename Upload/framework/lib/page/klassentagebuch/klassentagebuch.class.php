@@ -904,7 +904,8 @@ class klassentagebuch extends AbstractPage {
     		exit(0);
     	}
       eval("DB::getTPL()->out(\"" . DB::getTPL()->get("klassentagebuch/noklasse") . "\");");
-      exit(0);
+      PAGE::kill(true);
+			//exit(0);
     }
 
     $stundenplan = $this->currentStundenplan->getPlan(['grade',$grade])[$this->currentWeekDay-1];
@@ -1381,6 +1382,18 @@ class klassentagebuch extends AbstractPage {
             'name' => "klassentagebuch-klassentagebuch-abschalten",
             'typ' => 'BOOLEAN',
             'titel' => "Das Klassentagebuch abschalten? (Nur privates Lehrertagebuch)",
+            'text' => ""
+        ),
+        array(
+            'name' => "klassentagebuch-view-entries-begin-day",
+            'typ' => 'BOOLEAN',
+            'titel' => "Klassentagebucheinträge bereits am Beginn des Tages für alle anzeigen?",
+            'text' => ""
+        ),
+        array(
+            'name' => "klassentagebuch-view-entries-all-times",
+            'typ' => 'BOOLEAN',
+            'titel' => "Klassentagebucheinträge bereits nach dem Eintragen für alle anzeigen?",
             'text' => ""
         )
     );
