@@ -128,6 +128,9 @@ button.btn-blau {
 .text-bold {
   font-weight: bold;
 }
+.text-align-left {
+  text-align: left;
+}
 .text-lineHeight-m {
   line-height: 200%;
 }

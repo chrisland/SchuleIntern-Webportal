@@ -10,7 +10,7 @@
 
 
           <select v-model="messageMoveSelected">
-            <option v-bind:key="index" v-for="(item, index) in folders"
+            <option v-bind:key="index" v-for="(item, index) in foldersFilterMove"
               :value="item">{{item.folderName}}</option>
           </select>
           <button v-on:click="messageMove()">Verschieben</button>
@@ -44,6 +44,8 @@ export default {
   props: {
     messages: Array,
     folders: Array,
+    foldersFilterMove: Array,
+    moveFolders: Array,
     messageMoveSelected: String
   },
   data: function () {
@@ -54,7 +56,11 @@ export default {
     }
   },
   
+
   created: function () {
+
+    // console.log(this.folders);
+    
 
   },
   methods: {

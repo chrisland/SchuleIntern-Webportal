@@ -22,7 +22,7 @@
           <td v-bind:key="index" v-for="(item, index) in columns" >
 
             <i v-if="item == 'isRead' && entry[item] == 1" class=""></i>
-            <i v-else-if="item == 'isRead' && entry[item] == 0" class="fa fa-envelope-o"></i>
+            <i v-else-if="item == 'isRead' && entry[item] == 0" class="fa fa-envelope"></i>
             <i v-else-if="item == 'priority' && entry[item] == 'NORMAL'" class=""></i>
             <i v-else-if="item == 'priority' && entry[item] == 'HIGH'" class="fa fa-arrow-up text-red"></i>
             <i v-else-if="item == 'priority' && entry[item] == 'LOW'" class="fa fa-arrow-down text-green"></i>

@@ -8,7 +8,7 @@
         'height_35' : show.preview
       }">
       <Folders v-bind:folders="folders"></Folders>
-      <Messages v-bind:messages="messages" v-bind:folders="folders"></Messages>
+      <Messages v-bind:messages="messages" v-bind:folders="folders" v-bind:foldersFilterMove="foldersFilterMove"></Messages>
     </div>
     <div v-show="show.preview" class="preview flex-row">
       <Bar></Bar>
@@ -53,6 +53,7 @@ export default {
   data: function () {
     return {
       folders: {},
+      foldersFilterMove: [],
       messages: [],
       message: {},
       errorMsg: false,
@@ -80,7 +81,6 @@ export default {
       var url = 'rest.php/MoveMsgMessage/'+globals.userID+'/'+encodeURIComponent(data.toFolder.folderName)+'/'+data.toFolder.folderID;
       that.ajaxPost(
         url,
-        //'./../testjson/GetMsgFolders.json',
         {
           list: JSON.stringify(this.handlerClickList)
         },
@@ -117,7 +117,6 @@ export default {
       var url = 'rest.php/DeleteMsgMessage/'+globals.userID+'/'+this.activeFolder.folderName+'/'+this.activeFolder.folderID;
       that.ajaxPost(
         url,
-        //'./../testjson/GetMsgFolders.json',
         {
           list: JSON.stringify(this.handlerClickList)
         },
@@ -161,7 +160,6 @@ export default {
       }
       that.ajaxGet(
         url,
-        //'./../testjson/GetMsgFolders.json',
         {},
         function (response, that) {
           that.message = response.data;
@@ -190,10 +188,17 @@ export default {
 
       that.ajaxGet(
         'rest.php/GetMsgFolders/'+globals.userID,
-        //'./../testjson/GetMsgFolders.json',
         {},
         function (response, that) {
           that.folders = response.data;
+
+          for (const item in that.folders) {
+            if ( that.folders[item].folderName != "Gesendete" ) {
+              that.foldersFilterMove.push( that.folders[item] );
+            }
+            
+          }
+          
         },
         function (error) {
           that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
@@ -203,18 +208,6 @@ export default {
 
 
 
-      // that.ajaxGet(
-      //   'rest.php/GetMsgForm/'+globals.userID,
-      //   //'./../testjson/GetMsgFolders.json',
-      //   {},
-      //   function (response, that) {
-      //     console.log('rest.php/GetMsgForm/',response.data);
-          
-      //   },
-      //   function (error) {
-      //     that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Folders 404)'
-      //   }
-      // );
 
     });
 

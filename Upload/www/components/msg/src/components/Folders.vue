@@ -8,15 +8,19 @@
     
     <ul>
       <li v-bind:key="index" v-for="(item, index) in folders">
-        <button class=""
+        <button 
           @click="clickHandlerFolder(item)"
+          class="btn btn-grau text-align-left"
           :class="{
-            'btn btn-blau' : item.folderName == 'Posteingang',
-            'btn btn-gruen' : item.folderName == 'Gesendete',
-            ' btn-info' : item.folderName == 'Archiv',
-            ' btn-danger' : item.folderName == 'Papierkorb',
-            'btn btn-grau' : item.isStandardFolder == false
+            'btn-orange' : foldersOpen == item.folderName,
+            'margin-b-m' : item.folderName == 'Papierkorb'
           }" >
+
+          <i v-if="item.folderName == 'Posteingang'" class="fa fa-inbox"></i>
+          <i v-if="item.folderName == 'Gesendete'" class="fa fa-envelope"></i>
+          <i v-if="item.folderName == 'Archiv'" class="fa fa-archive"></i>
+          <i v-if="item.folderName == 'Papierkorb'" class="fa fa-trash"></i>
+
           {{item.folderName}}
         </button>
       </li>
@@ -30,6 +34,11 @@ export default {
   name: 'Folders',
   props: {
     folders: Object
+  },
+  data: function () {
+    return {
+      foldersOpen: 'Posteingang'
+    }
   },
   created: function () {
 
@@ -51,6 +60,8 @@ export default {
       EventBus.$emit('messages--changeFolder', {
         folder: item,
       })
+
+      this.foldersOpen = item.folderName;
 
     }
 

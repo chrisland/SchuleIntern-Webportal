@@ -42,7 +42,7 @@ class MsgInbox extends AbstractPage {
 		}
 
     eval("DB::getTPL()->out(\"" . DB::getTPL()->get("msg/inbox") . "\");");
-    exit(0);
+    PAGE::kill(true);
 	}
 
 
