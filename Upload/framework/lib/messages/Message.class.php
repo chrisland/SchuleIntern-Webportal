@@ -391,8 +391,9 @@ class Message {
 			$return['senderID'] = $this->getSender()->getUserID();
 			$return['senderConnect'] = $this->getSender()->getFirstName().' '.$this->getSender()->getLastName().' ('.$this->getSender()->getUserName().')';
 		}
-		if ( $this->getRecipients() ) {
-			$return['recipients'] = json_encode($this->recipients);
+
+		if ( $this->getFolder() == "GESENDETE" ) {
+			$return['recipients'] = $this->recipientsPreview;
 			//$return['senderConnect'] = $this->getSender()->getFirstName().' '.$this->getSender()->getLastName().' ('.$this->getSender()->getUserName().')';
 		}
 
@@ -482,8 +483,9 @@ class Message {
 	}
 	
 	public function setRead() {
-		DB::getDB()->query("UPDATE messages_messages SET messageIsRead=1 WHERE messageID='" . $this->id . "'");
+		//DB::getDB()->query("UPDATE messages_messages SET messageIsRead=1 WHERE messageID='" . $this->id . "'");
 		$this->isRead = true;
+		return true;
 	}
 	
 	public function setSentViaMail() {

@@ -1,5 +1,9 @@
 <template>
-  <div id="app" class="flex">
+  <div id="app" class="flex form-style">
+    
+
+    <div v-show="spinner" class="spinner">Wird geladen...</div>
+
     <div v-show="errorMsg" id="msg-error" class="callout callout-danger" >
       {{errorMsg}}
     </div>
@@ -8,7 +12,7 @@
         'height_35' : show.preview
       }">
       <Folders v-bind:folders="folders"></Folders>
-      <Messages v-bind:messages="messages" v-bind:folders="folders" v-bind:foldersFilterMove="foldersFilterMove"></Messages>
+      <Messages v-bind:messages="messages" v-bind:folders="folders" v-bind:foldersFilterMove="foldersFilterMove" v-bind:activeFolder="activeFolder"></Messages>
     </div>
     <div v-show="show.preview" class="preview flex-row">
       <Bar></Bar>
@@ -16,9 +20,13 @@
     </div>
 
     <div v-show="show.form">
-      <!-- <button @click="clickHandlerCloseform()">Close</button> -->
       <Form></Form>
     </div>
+
+    <div v-show="show.settings">
+      <Settings></Settings>
+    </div>
+
   </div>
 </template>
 
@@ -36,6 +44,7 @@ import Messages from './components/Messages.vue'
 import Message from './components/Message.vue'
 import Bar from './components/Bar.vue'
 import Form from './components/Form.vue'
+import Settings from './components/Settings.vue'
 
 const axios = require('axios').default;
 
@@ -48,7 +57,8 @@ export default {
     Messages,
     Message,
     Bar,
-    Form
+    Form,
+    Settings
   },
   data: function () {
     return {
@@ -60,8 +70,10 @@ export default {
       show: {
         list: true,
         preview: false,
-        form: false
+        form: false,
+        settings: false
       },
+      spinner: false,
 
       activeFolder: false,
       handlerClickList: []
@@ -78,7 +90,7 @@ export default {
         return false;
       }
 
-      var url = 'rest.php/MoveMsgMessage/'+globals.userID+'/'+encodeURIComponent(data.toFolder.folderName)+'/'+data.toFolder.folderID;
+      var url = 'rest.php/PostMsgMessageMove/'+globals.userID+'/'+encodeURIComponent(data.toFolder.folderName)+'/'+data.toFolder.folderID;
       that.ajaxPost(
         url,
         {
@@ -152,6 +164,40 @@ export default {
       this.handlerClickList = data.list;
     });
 
+    EventBus.$on('message--read', data => {
+
+      var url = 'rest.php/GetMsgMessageRead/'+globals.userID;
+      if (data.message.id) {
+        url += '/'+parseInt(data.message.id)
+      }
+      that.ajaxGet(
+        url,
+        {},
+        function (response, that) {
+          
+          console.log(response);
+
+          if (response.data.done == true) {
+
+              for (var j = 0; j < that.handlerClickList.length; j++) {
+                if (data.message.id == that.handlerClickList[j].id) {
+                  console.log(that.handlerClickList[j]);
+                }
+              }
+            
+
+          } else {
+            that.errorMsg = 'Beim Markieren ist leider ein Fehler aufgetreten. (Code:Ajax Message Read 2 404)'
+          }
+
+        },
+        function (error) {
+          that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Message Read 404)'
+        }
+      );
+    
+    });
+
     EventBus.$on('message--open', data => {
 
       var url = 'rest.php/GetMsgMessage/'+globals.userID;
@@ -165,7 +211,19 @@ export default {
           that.message = response.data;
           that.show.list = true;
           that.show.preview = true;
-          that.showform = false;
+          that.show.form = false;
+
+          // Set Message Read
+          if (that.message.isRead == 0) {
+            setTimeout(function () {
+              EventBus.$emit('message--read', {
+                message: that.message
+              });
+            }, 3000);
+            
+          }
+
+          
         },
         function (error) {
           that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Message 404)'
@@ -179,7 +237,7 @@ export default {
       that.message = false;
       that.show.list = true;
       that.show.preview = false;
-      that.showform = false;
+      that.show.form = false;
       
     });
 
@@ -238,7 +296,7 @@ export default {
             that.message = {};
             that.show.list = true;
             that.show.preview = false;
-            that.showform = false;
+            that.show.form = false;
           } else {
             that.errorMsg = 'Es ist leider ein Fehler aufgetreten. (Code:Ajax Data)'
           }
@@ -282,11 +340,27 @@ export default {
     });
 
     EventBus.$on('message--form--close', data => {
-      console.log('close form');
+      //console.log('close form');
       this.show.list = true;
       this.show.preview = false;
       this.show.form = false;
     });
+
+    EventBus.$on('settings--open', data => {
+      that.show.settings = true;
+      that.show.list = false;
+      that.show.preview = false;
+      that.show.form = false;
+    });
+    
+    EventBus.$on('settings--close', data => {
+      that.show.settings = false;
+      that.show.list = true;
+      that.show.preview = false;
+      that.show.form = false;
+    });
+
+
 
     /*
        Init
@@ -300,14 +374,15 @@ export default {
     })
 
     
+
+    
   },
   methods: {
 
-    // clickHandlerCloseform: function () {
-      
-    // },
+    
     ajaxGet: function (url, params, callback, error, allways) {
 
+      this.spinner = true;
       var that = this;
 
       axios.get(url, {
@@ -316,12 +391,14 @@ export default {
       .then(function (response) {
         // console.log(response.data);
         if (callback && typeof callback === 'function') {
+          that.spinner = false;
           callback(response, that);
         }
       })
       .catch(function (resError) {
         //console.log(error);
         if (resError && typeof error === 'function') {
+          that.spinner = false;
           error(resError);
         }
       })

@@ -29,7 +29,8 @@ class resthandler {
         'GetMsgMessage',
         'GetMsgForm',
         'DeleteMsgMessage',
-        'MoveMsgMessage'
+        'PostMsgMessageMove',
+        'GetMsgMessageRead'
     ];
   
   
@@ -64,12 +65,17 @@ class resthandler {
           
           $classname = 'Rest' . $request[0];
           
+
+
           /**
            * 
            * @var AbstractRest $action
            */
           $action = new $classname();
 
+          if ( $classname == 'RestPostMsgMessageRead') {
+            echo $method.$classname; exit;
+        }
 
           
           if($method != $action->getAllowedMethod()) {
@@ -80,6 +86,8 @@ class resthandler {
               $this->answer($result, 405);
           }
 
+
+          
 
           if($action->needsUserAuth()) {
               if (isset ( $_COOKIE ['schuleinternsession'] )) {
@@ -101,8 +109,9 @@ class resthandler {
               } else {
                   $this->answer([], 401);
               }
-          }
-          else {
+          } else {
+
+            
 
               foreach($headers as $headername => $headervalue) {
                   if(strtolower($headername) == 'authorization') {
@@ -120,6 +129,8 @@ class resthandler {
 
               // Check Auth
               if ($action->needsSystemAuth()) {
+
+                
 
                   $apiKey = null;
 
@@ -155,6 +166,8 @@ class resthandler {
                   }
               }
           }
+
+          
 
           // Execute wird nur aufgerufen, wenn die Authentifizierung erfolgreich war.
           $result = $action->execute($input, $request);

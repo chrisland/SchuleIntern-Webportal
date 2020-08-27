@@ -1,6 +1,6 @@
 <?php
 
-class RestMoveMsgMessage extends AbstractRest {
+class RestPostMsgMessageMove extends AbstractRest {
   
   protected $statusCode = 200;
 	
@@ -38,9 +38,9 @@ class RestMoveMsgMessage extends AbstractRest {
 		}
 		
 
-		if ( $input['folder'] ) {
-			$input['folder'] = json_decode($input['folder']);
-		}
+		// if ( $input['folder'] ) {
+		// 	$input['folder'] = json_decode($input['folder']);
+		// }
 		$toFolder = null;
 		
 		$folderName = strtoupper(urldecode(DB::getDB()->escapeString($request[2])));
@@ -51,6 +51,8 @@ class RestMoveMsgMessage extends AbstractRest {
 				$toFolder = MessageFolder::getFolder($user, "POSTEINGANG", 0);
 			} else if ($folderName == 'ARCHIV') {
 				$toFolder = MessageFolder::getFolder($user, "ARCHIV", 0);
+			} else if ($folderName == 'PAPIERKORB') {
+				$toFolder = MessageFolder::getFolder($user, "PAPIERKORB", 0);
 			}
 		} 
 			

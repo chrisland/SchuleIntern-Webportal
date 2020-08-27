@@ -134,10 +134,10 @@ export default {
         }
 
       } else {
-        // for (var i = 0; i < this.filteredlist.length; i++) {
-        //   this.clickHandlerList.push(this.filteredlist[i]);
-        //   this.filteredlist[i].selected = true;
-        // }
+        for (var i = 0; i < this.filteredlist.length; i++) {
+          this.clickHandlerList.push(this.filteredlist[i]);
+          this.filteredlist[i].selected = true;
+        }
         this.clickHandlerList = this.filteredlist;
       }
       

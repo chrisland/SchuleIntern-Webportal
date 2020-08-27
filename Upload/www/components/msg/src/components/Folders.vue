@@ -26,6 +26,8 @@
       </li>
     </ul>
 
+    <button v-on:click="clickHandlerSettingsOpen()">Settings</button>
+
   </div>
 </template>
 
@@ -47,6 +49,11 @@ export default {
   },
   methods: {
 
+    clickHandlerSettingsOpen: function () {
+      
+      EventBus.$emit('settings--open', {});
+    },
+    
     clickHandlerNewMessage: function () {
 
       EventBus.$emit('message--form', {
