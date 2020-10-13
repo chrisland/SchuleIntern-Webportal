@@ -26,7 +26,8 @@ class resthandler {
         'SetMensaMeal',
         'SetMensaOrder',
         'GetAcl',
-        'SetAcl'
+        'SetAcl',
+        'SetVplan'
     ];
   
   
