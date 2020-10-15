@@ -159,6 +159,9 @@ class requesthandler {
     'mensa' => [
       'mensaSpeiseplan'
     ],
+    'bridge' => [
+      'bridge'
+    ],
     'office365' => [
       'office365',
       'office365users',

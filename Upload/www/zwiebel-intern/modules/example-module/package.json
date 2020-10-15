@@ -1,0 +1,17 @@
+{
+  "name": "example-module",
+  "version": "1.0.0",
+  "description": "Example Module",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "webpack --progress --colors --hide-modules",
+    "dev": "npm run build --",
+    "watch": "npm run dev -- --watch",
+    "prod": "NODE_ENV=production npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@zwiebel-intern/webpack-base-config": "file:../../frontend-lib/webpack-base-config"
+  }
+}
