@@ -25,8 +25,10 @@ class resthandler {
         'GetUserCount',
         'SetMensaMeal',
         'SetMensaOrder',
+        'GetLogin',
         'GetAcl',
         'SetAcl'
+        
     ];
   
   
@@ -54,7 +56,6 @@ class resthandler {
           ];
           $this->answer($result, 404);
       }
-      
       if(in_array($request[0],self::$actions)) {
         
         PAGE::setFactory( new FACTORY() );
