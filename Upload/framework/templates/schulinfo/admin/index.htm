@@ -95,6 +95,13 @@
 				<td><b>Homepage</b><br /><small>Ohne https:// oder http://</small></td>
 				<td><input type="text" name="schulinfo-homepage" class="form-control" value="<expression>DB::getSettings()->getValue('schulinfo-homepage')</expression>" placeholder="www.schule.de"></td>
 			</tr>
+			<tr>
+				<td><b>Klassenanzahl</b><br /></td>
+				<td>
+					<input type="text" name="schulinfo-klassen-anzahl" class="form-control" value="<expression>DB::getSettings()->getValue('schulinfo-klassen-anzahl')</expression>">
+					<small>Wenn das Feld nicht gefüllt ist, wird die Anzahl aus der Datenbank berechnet.</small>
+				</td>
+			</tr>
 		</table>
 
 	</div>

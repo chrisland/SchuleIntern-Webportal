@@ -146,9 +146,15 @@ class schulinfo extends AbstractPage {
 
 		$schuelerAnzahl = schueler::getAnzahlSchueler() . "<br />davon " . schueler::getAnzahlWeiblich() . " weiblich und " . schueler::getAnzahlMaennlich() . " männlich";
 
-		$klassenAnzahl = klasse::getAnzahlKlassen();
+        $klassenAnzahlSettings = DB::getSettings()->getValue("schulinfo-klassen-anzahl");
+        if ($klassenAnzahlSettings) {
+            $klassenAnzahl = intval($klassenAnzahlSettings);
+        } else {
+            $klassenAnzahl = klasse::getAnzahlKlassen();
+        }
 
-		$schuelerProKlasse = floor($schuelerAnzahl / $klassenAnzahl);
+        $schuelerProKlasse = floor($schuelerAnzahl / $klassenAnzahl);
+
 
 		eval("DB::getTPL()->out(\"" . DB::getTPL()->get("schulinfo/index") . "\");");
 	}
@@ -281,7 +287,8 @@ class schulinfo extends AbstractPage {
 				'schulinfo-fachbetreuer-show',
 				'schulinfo-fachlehrer-show',
 				'schulinfo-personalrat-show',
-				'schulinfo-faecher-show'
+				'schulinfo-faecher-show',
+                'schulinfo-klassen-anzahl'
 		];
 
 
