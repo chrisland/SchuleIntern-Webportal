@@ -231,7 +231,6 @@ class absenzensekretariat extends AbstractPage {
       
       
       echo("]\r\n");
-      exit(0);
   }
 
   private function deleteMerker() {
@@ -1248,7 +1247,7 @@ class absenzensekretariat extends AbstractPage {
           '" . implode(",",$stunden) . "',
           '1',
           '" . $idBefreiung . "',
-          '" . date("d.m.Y H:i") . " Uhr: (" . DB::getSession()->getData("userName") . "): Befreiung ausgestellt. (Lehrkraft: " . DB::getDB()->escapeString($_POST['currentLehrer']) . ") " . DB::getDB()->escapeString($_POST['bemerkung']) . "'
+          '" . date("d.m.Y H:i") . " Uhr: (" . DB::getSession()->getData("userName") . "): Befreiung ausgestellt. " . DB::getDB()->escapeString($_POST['bemerkung']) . "'
         )");
 
     $newID = DB::getDB()->insert_id();
@@ -1586,8 +1585,7 @@ class absenzensekretariat extends AbstractPage {
       $meldungen[$m['meldungKlasse']] = $m;
     }
 
-    $merkerData = [];
-
+    $merkerData = array();
     // Merker
     if($this->merkerActive) {
       $merkerSQL = DB::getDB()->query("SELECT * FROM absenzen_merker JOIN schueler ON merkerSchuelerAsvID=schuelerAsvID WHERE merkerDate <= '" . DateFunctions::getMySQLDateFromNaturalDate($currentDate) . "'");
@@ -1596,38 +1594,13 @@ class absenzensekretariat extends AbstractPage {
       }
     }
 
-
-
-    $merkerHTML = "";
-
-
-    $activeMerker = [];
-
-    if($this->merkerActive) {
-
-      $merkers = [];
-      for($m = 0; $m < sizeof($merkerData); $m++) {
-
-        if($_REQUEST['activeKlasse'] == "" || $_REQUEST['activeKlasse'] == $merkerData[$m]['schuelerKlasse']) {
-          $merkers[] = "<a  class='btn btn-sm btn-danger btn-block' href='index.php?page=absenzensekretariat&activeKlasse={$_REQUEST['activeKlasse']}&currentDate={$currentDate}&mode=deleteMerker&merkerID=" . $merkerData[$m]['merkerID'] . "'><i class=\"fa fa-bell\"></i> <b>" . $merkerData[$m]['schuelerName'] . ", " . $merkerData[$m]['schuelerRufname'] . " (" . $merkerData[$m]['schuelerKlasse'] . ")</b> | " . $merkerData[$m]['merkerText'] . " | " . DateFunctions::getNaturalDateFromMySQLDate($merkerData[$m]['merkerDate']) . "</a>";
-        }
-
-        $activeMerker[$merkerData[$m]['schuelerKlasse']] = true;
-      }
-
-      $merkerHTML = implode("",$merkers);
-
-    }
-
-
     $klassenListeHTML = "";
     $activeKlasse = null;
     for($i = 0; $i < sizeof($klassen); $i++) {
       $kl = array();
 
       for($k = 0; $k < sizeof($klassen[$i]->getKlassenleitung()); $k++) {
-        // $kl[] = $klassen[$i]->getKlassenleitung()[$k]->getName() . ", " . substr($klassen[$i]->getKlassenleitung()[$k]->getRufname(),0,1) . "." ;
-        $kl[] = $klassen[$i]->getKlassenLeitung()[$k]->getKuerzel();
+        $kl[] = $klassen[$i]->getKlassenleitung()[$k]->getName() . ", " . substr($klassen[$i]->getKlassenleitung()[$k]->getRufname(),0,1) . "." ;
       }
 
       if(sizeof($kl) > 0) $kl = implode("; ",$kl);
@@ -1639,13 +1612,15 @@ class absenzensekretariat extends AbstractPage {
 
 
 
-      $klassenListeHTML .= "<tr><td><a href=\"index.php?page=absenzensekretariat&activeKlasse=" . $klassen[$i]->getKlassenName() . "&currentDate=" . $currentDate . "\" class='btn btn-block btn-xs" . ($activeMerker[$klassen[$i]->getKlassenName()] === true ? " btn-warning" : " btn-primary") . (($klassen[$i]->getKlassenName() == $_GET['activeKlasse']) ? (" disabled") : ("")) . "'><b>" . $klassen[$i]->getKlassenName() . "</b> - <small>$kl</small></a>" . (($klassen[$i]->getKlassenName() == $_GET['activeKlasse']) ? ("</u>") : (""));
+      $klassenListeHTML .= "<tr><td>" . (($klassen[$i]->getKlassenName() == $_GET['activeKlasse']) ? ("<u>") : ("")) . "<a href=\"index.php?page=absenzensekretariat&activeKlasse=" . $klassen[$i]->getKlassenName() . "&currentDate=" . $currentDate . "\" style=\"display:block\">" . $klassen[$i]->getKlassenName() . " <small>($kl)</small></a>" . (($klassen[$i]->getKlassenName() == $_GET['activeKlasse']) ? ("</u>") : (""));
 
-      /** if($this->merkerActive) {
+      if($this->merkerActive) {
         $merkerKlasse = array();
         for($m = 0; $m < sizeof($merkerData); $m++) {
           if($merkerData[$m]['schuelerKlasse'] == $klassen[$i]->getKlassenName()) {
-            $merkerKlasse[] = "<a  class='btn btn-xs btn-danger btn-block' href='index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=deleteMerker&merkerID=" . $merkerData[$m]['merkerID'] . "'><i class=\"fa fa-bell\"></i> <b>" . $merkerData[$m]['schuelerName'] . ", " . $merkerData[$m]['schuelerRufname'] . "</b><br />" . $merkerData[$m]['merkerText'] . "<br />" . DateFunctions::getNaturalDateFromMySQLDate($merkerData[$m]['merkerDate']) . "</a>";
+            $merkerKlasse[] = "
+
+			<button type=\"button\" class=\"btn btn-xs btn-warning\" onclick=\"window.location.href='index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=deleteMerker&merkerID=" . $merkerData[$m]['merkerID'] . "'\"><i class=\"fa fa-bell\"></i> <b>" . $merkerData[$m]['schuelerName'] . ", " . $merkerData[$m]['schuelerRufname'] . "</b><br />" . $merkerData[$m]['merkerText'] . "<br />" . DateFunctions::getNaturalDateFromMySQLDate($merkerData[$m]['merkerDate']) . "</button>";
 
           }
         }
@@ -1656,41 +1631,29 @@ class absenzensekretariat extends AbstractPage {
         else {
           $klassenListeHTML .= "";
         }
-      } **/
-
-      $klassenListeHTML .= "</td>";
-
-
-      if(SchuelerQuarantaene::isActive()) {
-        $klassenListeHTML .= "<td>";
-        if(SchuelerQuarantaene::hasOneInClass($klassen[$i])) $klassenListeHTML .= "<button class=\"btn btn-danger disabled btn-block\" data-toggle=\"tooltip\" title='Personen in Quarantäne / Isolation'><i class='fa fa-head-side-mask'></i><i class='fa fa-child'></i></button>";
-        $klassenListeHTML .= "</td>";
       }
 
+      $klassenListeHTML .= "</td><td>";
 
       if(DB::getSettings()->getValue("absenzen-meldungaktivieren") > 0) {
-        $klassenListeHTML .= '<td style="text-align: right"><div class="btn-group" role="group" >';
         if(is_array($meldungen[$klassen[$i]->getKlassenName()])) {
-          $klassenListeHTML .= "<a class='btn btn-default' href=\"index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=unMarkMeldung&meldungKlasse={$klassen[$i]->getKlassenName()}\" data-toggle=\"tooltip\" title=\"Gemeldet. Bearbeitet durch " . $meldungen[$klassen[$i]->getKlassenName()]['userName'] . " am " . date("d.m.Y H:i",$meldungen[$klassen[$i]->getKlassenName()]['meldungTime']) ."\"><i class=\"fa fa-check\"></i></a>";
+          $klassenListeHTML .= "<a href=\"index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=unMarkMeldung&meldungKlasse={$klassen[$i]->getKlassenName()}\" data-toggle=\"tooltip\" title=\"Gemeldet. Bearbeitet durch " . $meldungen[$klassen[$i]->getKlassenName()]['userName'] . " am " . date("d.m.Y H:i",$meldungen[$klassen[$i]->getKlassenName()]['meldungTime']) ."\"><i class=\"fa fa-check\"></i></a>";
         }
         else {
-          $klassenListeHTML .= "<a class='btn btn-default' href=\"index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=markMeldung&meldungKlasse={$klassen[$i]->getKlassenName()}\" data-toggle=\"tooltip\" title=\"Noch nicht gemeldet. Klicken, um zu bestätigen.\"><font color=\"red\"><i class=\"fa fa-ban\"></i></font></a>";
+          $klassenListeHTML .= "<a href=\"index.php?page=absenzensekretariat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}&mode=markMeldung&meldungKlasse={$klassen[$i]->getKlassenName()}\" data-toggle=\"tooltip\" title=\"Noch nicht gemeldet. Klicken, um zu bestätigen.\"><font color=\"red\"><i class=\"fa fa-ban\"></i></font></a>";
         }
-        $klassenListeHTML .= " <a class='btn btn-default' data-toggle=\"tooltip\" title=\"Statistik der Meldungen\" href=\"index.php?page=absenzensekretariat&mode=meldungStat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}\"><i class=\"fa fa-chart-pie\"></i></font></a>";
+        $klassenListeHTML .= " <a data-toggle=\"tooltip\" title=\"Statistik der Meldungen\" href=\"index.php?page=absenzensekretariat&mode=meldungStat&activeKlasse={$klassen[$i]->getKlassenName()}&currentDate={$currentDate}\"><i class=\"fa fa-pie-chart\"></i></font></a>";
 
-        $klassenListeHTML .= '</div></td>';
       }
+      else $klassenListeHTML .= "&nbsp;";
 
 
 
-      $klassenListeHTML .= "</tr>";
+      $klassenListeHTML .= "</td></tr>";
 
     }
 
 
-    $quarantaeneList = "";
-
-    $anzahlQuarantaene = 0;
 
     if($activeKlasse != null) {
       $lnw = [];
@@ -1719,15 +1682,12 @@ class absenzensekretariat extends AbstractPage {
       $viewKlasse = "(Klasse " . $activeKlasse->getKlassenName() . ")";
       
       $nummer = 0;
-
-      $anzahlAktiveSchuler = 0;
       
       for($i = 0; $i < sizeof($activeKlasse->getSchueler()); $i++) {
 
       	if(!$activeKlasse->getSchueler()[$i]->isAusgetreten()) {
       		$nummer++;
       		$nummerShow = $nummer;
-      		$anzahlAktiveSchuler++;
       	}
       	else $nummerShow = '-';
 
@@ -1745,9 +1705,11 @@ class absenzensekretariat extends AbstractPage {
             $schuelerListeHTML .= "</td>";
         }
         
-        $schuelerListeHTML .= "<td><button type=\"button\" class=\"btn btn-default btn-block text-left\" data-toggle=\"modal\" data-target=\"#modal" . $activeKlasse->getSchueler()[$i]->getAsvID() . "\">";
+        $schuelerListeHTML .= "<td><a href=\"#\" data-toggle=\"modal\" data-target=\"#modal" . $activeKlasse->getSchueler()[$i]->getAsvID() . "\">";
 
         if($activeKlasse->getSchueler()[$i]->isAusgetreten()) $schuelerListeHTML .= "<small>";
+
+
 
         $schuelerListeHTML .= $activeKlasse->getSchueler()[$i]->getCompleteSchuelerName();
 
@@ -1757,13 +1719,12 @@ class absenzensekretariat extends AbstractPage {
           $schuelerListeHTML .= " <span class=\"label label-danger\">Attestpflicht</span>";
         }
 
-        $schuelerListeHTML .= "</button>";
-
-
+        $schuelerListeHTML .= "</a>";
 
         if(AbsenzSchuelerInfo::getComment($activeKlasse->getSchueler()[$i]) != "") {
-          $schuelerListeHTML .= "<a href=\"#\" data-toggle=\"tooltip\" class=\"btn btn-default\" title=\"" . @htmlspecialchars((AbsenzSchuelerInfo::getComment($activeKlasse->getSchueler()[$i]))) . "\"><i class=\"far fa-sticky-note\"></i></a> ";
+          $schuelerListeHTML .= " <a href=\"#\" data-toggle=\"tooltip\" title=\"" . @htmlspecialchars((AbsenzSchuelerInfo::getComment($activeKlasse->getSchueler()[$i]))) . "\"><i class=\"far fa-sticky-note\"></i></a> ";
         }
+
 
         $merkerSchueler = array();
         for($m = 0; $m < sizeof($merkerData); $m++) {
@@ -1775,19 +1736,6 @@ class absenzensekretariat extends AbstractPage {
         if(sizeof($merkerSchueler) > 0) {
           $schuelerListeHTML .= "<br /><small>" . implode("",$merkerSchueler) . "</small>";
         }
-
-        $quarantaene = SchuelerQuarantaene::getCurrentForSchueler($activeKlasse->getSchueler()[$i]);
-
-        if($quarantaene != null) {
-          $schuelerListeHTML .= " " . $quarantaene->getStatusLabel();
-
-          $quarantaeneList .= "<tr><td>" . $activeKlasse->getSchueler()[$i]->getCompleteSchuelerName() . "</td><td>" . $quarantaene->getStartAsNaturalDate() . "</td><td>" . $quarantaene->getEndAsNaturalDate() . "</td></tr>";
-
-          $anzahlQuarantaene++;
-        }
-
-
-
 
         $schuelerListeHTML .= "</td></tr>";
 
@@ -1930,7 +1878,10 @@ class absenzensekretariat extends AbstractPage {
     
     for($i = 0; $i < sizeof($beurlaubungen); $i++) {
         $hasBeurlaubungen = true;
-        eval("\$beurlaubungenHTML .= \"" . DB::getTPL()->get("absenzen/sekretariat/index_bit_online_beurlaubung") . "\";");
+        if ( $beurlaubungen[$i]->getSchueler() ) {
+	        eval("\$beurlaubungenHTML .= \"" . DB::getTPL()->get("absenzen/sekretariat/index_bit_online_beurlaubung") . "\";");
+        }
+        
     }
     
 
@@ -1961,12 +1912,7 @@ class absenzensekretariat extends AbstractPage {
     if($currentStunde == 0) $currentStunde = DB::getSettings()->getValue("stundenplan-anzahlstunden");
 
 
-    $ganzeKlasseQuarantaene = false;
-
-    if(SchuelerQuarantaene::isActive()) {
-      if($anzahlAktiveSchuler == $anzahlQuarantaene && $anzahlQuarantaene > 0) $ganzeKlasseQuarantaene = true;
-    }
-
+    
 
 
     eval("echo(\"" . DB::getTPL()->get("absenzen/sekretariat/index") . "\");");

@@ -234,25 +234,15 @@
                     <tr>
                       <td>
                       	<p><b>Neue Nachricht bei <expression>DB::getGlobalSettings()->siteNamePlain</expression></b>
-                        <p><b>Betreff:</b>
-                            <if($isConfidential)><then>
-                              <i>Der Inhalt der Nachricht ist vertraulich</i>
-                            </then>
-                            <else>
-                              $subject
-                            </else>
-                            </if>
-                        </p>
+                        <p><b>Betreff:</b> $subject</p>
                         <p><b>Absender:</b> $sender</p>
-                        <if($myRecipient != "")><then><p><b>Betrifft Sie als:</b> $myRecipient</p></then></if>
-                        <p></p>
-                        <if($attachmentsHTML != "" && !$isConfidential)><then>
+                        <if($attachmentsHTML != "")><then>
                         <hr>
                         <p><b>Anhänge:</b></p>
                         <p>$attachmentsHTML</p>
                         </then></if>
                         
-                        <if($needConfirm && !$isConfidential)>
+                        <if($needConfirm)>
                         <then>
                         <hr>
                         <p><b>Der Empfang dieser Nachricht muss bestätigt werden.</b></p>
@@ -290,23 +280,10 @@
                         <b>Bitte beachten Sie: Sie können NICHT mit der Antwortfunktion Ihres E-Mailprogramms auf diese Nachricht antworten. Zum Antworten loggen Sie sich bitte im Portal ein und antworten Sie dort unter "Nachrichten".</b>
                         
                         <hr>
-
-                        <if($isConfidential)><then>
-                          <p><i>Der Inhalt der Nachricht ist vertraulich.</i></p>
-                        </then>
-                        <else>
-                          <p>$messageText</p>
-                        </else>
-                        </if>
-
+                        
+                        <p>$messageText</p>
+                        
                         <hr>
-
-                        <if($replyOrForwardText != "" && !$isConfidential)><then>
-                        <p><b>Ursprüngliche Nachricht:</b><br />
-                          $replyOrForwardText</p>
-                        <hr>
-                        </then></if>
-
                         <p>Impressum:<br />
                           <expression>DB::getSettings()->getValue("impressum-text")</expression></p>
                         <hr>

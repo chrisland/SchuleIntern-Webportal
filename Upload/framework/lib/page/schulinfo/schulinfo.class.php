@@ -113,7 +113,7 @@ class schulinfo extends AbstractPage {
 		$lehrerHTML = "";
 		for($i = 0; $i < sizeof($alleLehrer); $i++) {
 
-			$lehrerHTML .= "<tr><td>" . $alleLehrer[$i]->getKuerzel() . "</td><td>" . $alleLehrer[$i]->getDisplayNameMitAmtsbezeichnung() . "</td>";
+			$lehrerHTML .= "<tr><td>" . $alleLehrer[$i]->getDisplayNameMitAmtsbezeichnung() . "</td>";
 
 			if(DB::getSession()->isAdmin() || self::isSchulleitung(DB::getSession()->getUser())) {
 				$lehrerHTML .= "<td>";
@@ -146,7 +146,12 @@ class schulinfo extends AbstractPage {
 
 		$schuelerAnzahl = schueler::getAnzahlSchueler() . "<br />davon " . schueler::getAnzahlWeiblich() . " weiblich und " . schueler::getAnzahlMaennlich() . " männlich";
 
-		$klassenAnzahl = klasse::getAnzahlKlassen();
+        $klassenAnzahlSettings = DB::getSettings()->getValue("schulinfo-klassen-anzahl");
+        if ($klassenAnzahlSettings) {
+            $klassenAnzahl = intval($klassenAnzahlSettings);
+        } else {
+            $klassenAnzahl = klasse::getAnzahlKlassen();
+        }
 
 		$schuelerProKlasse = floor($schuelerAnzahl / $klassenAnzahl);
 
@@ -281,7 +286,8 @@ class schulinfo extends AbstractPage {
 				'schulinfo-fachbetreuer-show',
 				'schulinfo-fachlehrer-show',
 				'schulinfo-personalrat-show',
-				'schulinfo-faecher-show'
+				'schulinfo-faecher-show',
+                'schulinfo-klassen-anzahl'
 		];
 
 
@@ -621,14 +627,6 @@ class schulinfo extends AbstractPage {
 	    return DB::getSettings()->getValue('schulinfo-schultyp') == 'gy';
 	}
 
-
-	public static function isRealschule() {
-        return DB::getSettings()->getValue('schulinfo-schultyp') == 'rs';
-    }
-
-    public static function isGrundschule() {
-        return DB::getSettings()->getValue('schulinfo-schultyp') == 'rs';
-    }
 
 
 }

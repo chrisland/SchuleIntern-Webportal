@@ -6,12 +6,6 @@ class MessageSender{
 	private $subject;
 	private $text;
 	private $sender;
-
-    /**
-     * Anzahl der verschickten Nachrichten
-     * @var int
-     */
-	private $sentMessages = 0;
 	
 	/**
 	 * 
@@ -69,12 +63,6 @@ class MessageSender{
 	private $priority = 'NORMAL';
 	
 	private $allowAnswer = true;
-
-    /**
-     * Vertrauliche Nachricht? (Wird nur ohne Text per E-Mail verschickt und entsprechend angezeigt.)
-     * @var bool
-     */
-	private $messageIsConfidential = false;
 	
 	/**
 	 * 
@@ -98,13 +86,6 @@ class MessageSender{
 	public function dontAllowAnswer() {
 		$this->allowAnswer = false;
 	}
-
-    /**
-     * Setzt die Nachricht auf Vertarulich.
-     */
-	public function setConfidential() {
-	    $this->messageIsConfidential = true;
-    }
 	
 	/**
 	 * 
@@ -194,9 +175,9 @@ class MessageSender{
 			'messageText',
 			'messageSender',
 			'messageRecipients',
-            'messageRecipientsPreview',
-		    'messageCCRecipients',
-		    'messageBCCRecipients',
+      'messageRecipientsPreview',
+		  'messageCCRecipients',
+		  'messageBCCRecipients',
 			'messageTime',
 			'messageIsReplyTo',
 			'messageIsForwardFrom',
@@ -207,9 +188,8 @@ class MessageSender{
 			'messageAttachments',
 			'messagePriority',
 			'messageAllowAnswer',
-		    'messageHasQuestions',
-		    'messageQuestionIDs',
-            'messageIsConfidential'
+		  'messageHasQuestions',
+		  'messageQuestionIDs'
 		];
 		
 		$saveStrings = [];
@@ -224,17 +204,14 @@ class MessageSender{
 
 		for($i = 0; $i < sizeof($this->recipients); $i++) {
 			$recipientNames[] = DB::getDB()->encodeString($this->recipients[$i]->getDisplayName());
-		}
-
+		} 
 
 		$saveStringsRecipients = $this->sendToRecipientsAndGetSaveStrings($this->recipients, $messageQuestionIDs);
 		$saveStringsCCRecipients = $this->sendToRecipientsAndGetSaveStrings($this->ccRecipients, $messageQuestionIDs);
 		$saveStringsBCCRecipients = $this->sendToRecipientsAndGetSaveStrings($this->bccRecipients, $messageQuestionIDs);
-
-
-		$sumRecipients = $this->sentMessages;
-
-        // SaveIDs mit Message IDs zusammenstellen
+		
+		
+		// SaveIDs mit Message IDs zusammenstellen
 		
 		// Gesendete Nachricht einfügen
 		$insert = [];
@@ -245,8 +222,8 @@ class MessageSender{
 					'" . $this->sender->getUserID() . "',
 					'" . implode(";",$saveStringsRecipients) . "',
 					'" . implode(", ", $recipientNames ) . "',
-                    '" . implode(";",$saveStringsCCRecipients) . "',
-                    '" . implode(";",$saveStringsBCCRecipients) . "',
+          '" . implode(";",$saveStringsCCRecipients) . "',
+          '" . implode(";",$saveStringsBCCRecipients) . "',
 					UNIX_TIMESTAMP(),
 					'" . (($this->replyMessage != null) ? ($this->replyMessage->getID()) : 0) . "',
 					'" . (($this->forwardMessage != null) ? ($this->forwardMessage->getID()) : 0) . "',
@@ -255,23 +232,19 @@ class MessageSender{
 					'" . implode(",",$this->attachments) . "',
 					'" . $this->priority . "',
 					'" . ($this->allowAnswer ? 1 : 0) . "',
-                    '" . ((sizeof($this->messageQuestions) > 0) ? 1 : 0) . "',
-                    '" . $messageQuestionIDs . "',
-                    '" . $this->messageIsConfidential . "'
+          '" . ((sizeof($this->messageQuestions) > 0) ? 1 : 0) . "',
+          '" . $messageQuestionIDs . "'
 					)
 				";
 		DB::getDB()->query("INSERT INTO messages_messages (" . implode(",", $fields) . ") VALUES " . implode(",",$insert));
 		
 
-		$maxRecipientsForAutoresponder = DB::getSettings()->getInteger("messages-max-recipients-for-autoresponder");
-
 		/*
-		 * AutoResponse
+		* AutoResponse
 		*/
-		if ($onlyOnce == false && ($maxRecipientsForAutoresponder > 0 && $sumRecipients <= $maxRecipientsForAutoresponder)) {
+
+		if ($onlyOnce == false) {
 			$this->sendAutoResponse($this->recipients);
-            $this->sendAutoResponse($this->bccRecipients);
-            $this->sendAutoResponse($this->ccRecipients);
 		}
 
 
@@ -345,9 +318,7 @@ class MessageSender{
 	        'messagePriority',
 	        'messageAllowAnswer',
 	        'messageHasQuestions',
-	        'messageQuestionIDs',
-            'messageMyRecipientSaveString',
-            'messageIsConfidential'
+	        'messageQuestionIDs'
 	    ];
 	    
 	    for($i = 0; $i < sizeof($recipients); $i++) {
@@ -378,12 +349,9 @@ class MessageSender{
 					'" . $this->priority . "',
 					'" . ($this->allowAnswer ? 1 : 0). "',
                     '" . ((sizeof($this->messageQuestions) > 0) ? 1 : 0) . "',
-                    '" . $messageQuestionIDs . "',
-                    '" . $recipients[$i]->getSaveString() . "',
-                    '" . $this->messageIsConfidential . "'
+                    '" . $messageQuestionIDs . "'
 					)
 				";
-	            $this->sentMessages++;
 	        }
 	        
 	        if(sizeof($insert) > 0) {

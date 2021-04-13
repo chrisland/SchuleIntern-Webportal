@@ -31,12 +31,22 @@ class mebis extends AbstractPage {
 			$nachname = DB::getSession()->getPupilObject()->getName();
 		}
 		
-
+		/*
+		
+		Andere bekommen keine Kennung.
+		
+		else {
+			$vorname = DB::getSession()->getData("userFirstName");
+			$nachname = DB::getSession()->getData("userLastName");
+		}
+		
+		*/
+		
 		// Suche den eigenen Account
 		$account = DB::getDB()->query_first("SELECT * FROM mebis_accounts WHERE 
-				mebisAccountVorname LIKE '" . DB::getDB()->escapeString($vorname) . "'
+				mebisAccountVorname LIKE '" . $vorname . "'
 				AND
-				mebisAccountNachname LIKE '" . DB::getDB()->escapeString($nachname) . "'	
+				mebisAccountNachname LIKE '" . $nachname . "'	
 		");
 		
 		if($account['mebisAccountID'] > 0) {

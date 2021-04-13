@@ -89,12 +89,6 @@ class FILE {
     return false;
   }
 
-  /**
-   * 
-   * 
-   * @author: Christian Marienfeld
-   * 
-   */
 
   public static function formatBytes($size, $precision = 2) { 
     $base = log($size, 1024);
@@ -102,29 +96,7 @@ class FILE {
 
     return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
 
-  } 
-
-  /**
-   * 
-   * 
-   * @author: Christian Marienfeld
-   * 
-   */
-
-  public function removeFolder($dir) {
-    if (is_dir($dir)) {
-      $objects = scandir($dir);
-      foreach ($objects as $object) {
-        if ($object != "." && $object != "..") {
-          if (filetype($dir."/".$object) == "dir") 
-            FILE::removeFolder($dir."/".$object); 
-          else unlink   ($dir."/".$object);
-        }
-      }
-      reset($objects);
-      rmdir($dir);
-    }
-  }
+} 
 
 
 }

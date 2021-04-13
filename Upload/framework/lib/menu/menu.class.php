@@ -8,7 +8,6 @@
  */
 class menu {
   private $html = "";
-  private $extensions = [];
 
   public function __construct($isAdmin = false, $isNotenverwaltung = false) {
     if($isAdmin) $this->adminMenu();
@@ -116,9 +115,7 @@ class menu {
 
 
 
-    if(DB::getSession()->isAdmin()) $modulAdminHTML .= $this->getMenuItem('administrationactivatepages', 'Modulstatus', 'fa fas fa-toggle-on');
-
-    if(DB::getSession()->isAdmin()) $modulAdminHTML .= $this->getMenuItem('administrationmodule&module=AdminExtensions', 'Erweiterungen', 'fa fas fa-plug');
+    if(DB::getSession()->isAdmin()) $modulAdminHTML .= $this->getMenuItem('administrationactivatepages', 'Modulstatus', 'fas fa-toggle-on');
 
 
     $displayActions = [];
@@ -228,14 +225,6 @@ class menu {
     }
     
     
-    
-    $this->extensions = [];
-		$result = DB::getDB()->query('SELECT `id`,`name`,`folder`,`menuCat` FROM `extensions` WHERE `active` = 1 ');
-		while($row = DB::getDB()->fetch_array($result)) {
-      $this->extensions[] = $row;
-      //$this->html .= $this->getMenuItem($row['folder'], $row['name'],'fa fa-cogs');
-    }
-    
     $this->aktuelles();
     $this->informationen();
     $this->lehrerAnwendungen();
@@ -267,20 +256,6 @@ class menu {
     
     
   }
-
-
-  private function getExtensionLink($cat) {
-    $html = '';
-    if ($this->extensions && $cat) {
-      foreach($this->extensions as $ext) {
-        if ( $cat == $ext['menuCat']) {
-          $html .= $this->getMenuItem($ext['folder'], $ext['name'],'fa fa-cogs');
-        }
-      }
-    }
-    return $html;
-  }
-
   
   private function aktuelles() {
           
@@ -295,7 +270,9 @@ class menu {
     }
     
     
-    if($this->isActive("klassenkalender") || $this->isActive('extKalender') || $this->isActive('andereKalender')) {
+    if($this->isActive("klassenkalender")
+    || $this->isActive('extKalender')
+    || $this->isActive('andereKalender') ) {
         $html .= $this->startDropDown(['klassenkalender','extKalender','andereKalender','terminuebersicht'], "Kalender", "fa fa-calendar");
         
         
@@ -308,11 +285,11 @@ class menu {
         // Externe Kalender
         
         if ( $this->isActive('extKalender') ) {
-          $externeKalender = extKalender::getKalenderWithAccess();
-          
-          for($i = 0; $i < sizeof($externeKalender); $i++) {
-              $html .= $this->getMenuItem('extKalender', $externeKalender[$i]['kalenderName'], 'fa fa-calendar',['kalenderID' => $externeKalender[$i]['kalenderID']]);
-          }
+	        $externeKalender = extKalender::getKalenderWithAccess();
+	        
+	        for($i = 0; $i < sizeof($externeKalender); $i++) {
+	            $html .= $this->getMenuItem('extKalender', $externeKalender[$i]['kalenderName'], 'fa fa-calendar',['kalenderID' => $externeKalender[$i]['kalenderID']]);
+	        }
         }
         
         if($this->isActive("kalenderAllInOne")) {
@@ -363,11 +340,11 @@ class menu {
                     $faecher = fach::getMyFachschaftsleitungFaecher(DB::getSession()->getTeacherObject());
                     
                     for($i = 0; $i < sizeof($faecher); $i++) {
-                        $htmlFachschaftsleitung .= $this->getMenuItem("klassenkalender", $faecher[$i]->getLangform(), "fas fa-briefcase", ['grade' => 'fachbetreuer', 'fachASDID' => urlencode($faecher[$i]->getASDID())]);
+                        $htmlFachschaftsleitung .= $this->getMenuItem("klassenkalender", $faecher[$i]->getLangform(), "fa fa-briefcase", ['grade' => 'fachbetreuer', 'fachASDID' => urlencode($faecher[$i]->getASDID())]);
                     }
                     
                     if($htmlFachschaftsleitung != "") {
-                        $html .= $this->startDropDown(['klassenkalender'], "Fachbetreuung", "fas fa-briefcase", ['fachASDID' => ['ISPRESENT']]);
+                        $html .= $this->startDropDown(['klassenkalender'], "Fachbetreuung", "fa fa-group", ['fachASDID' => ['ISPRESENT']]);
                         
                         $html .= $htmlFachschaftsleitung;
                         
@@ -402,18 +379,16 @@ class menu {
         
         $html .= $this->endDropDown();
     }
-
+    
+    
+    if($this->isActive('ffbumfrage') && (DB::getSession()->isPupil() || DB::getSession()->isEltern())){
+        $html .= $this->getMenuItem('ffbumfrage', 'Umfrage', "fa fa-question-circle");
+    }
     
     
     if($html != "") {
         $this->html .= $this->getTrenner('<i class="fa fa-clock"></i> Aktuelles</a>');
         $this->html .= $html;
-
-        $this->html .= $this->getExtensionLink('aktuelles');
-
-
-        
-
     }
     
   }
@@ -466,7 +441,7 @@ class menu {
 
     if(!DB::getSession()->isEltern() &&
         
-        ($this->isActive("office365") || $this->isActive("homeuseprogram") || $this->isActive("office365info")
+        ($this->isActive("office365") || $this->isActive("homeuseprogram") || $this->isActive("downloads") || $this->isActive("office365info")
             
             
             
@@ -475,9 +450,9 @@ class menu {
         
         ) {
             
-            $html .= $this->startDropDown(['office365','homeuseprogram'], "Software / Lizenzen", "fa fa-download");
+            $html .= $this->startDropDown(['office365','homeuseprogram','dreamspark','downloads','downloadsteacher'], "Software / Lizenzen", "fa fa-download");
             
-
+            
             if($this->isActive("office365users") && (DB::getSession()->isTeacher() || DB::getSession()->isPupil())) {
                 $html .= $this->getMenuItem("office365users", "Office 365 Account", "fa fa-file-word");
             }
@@ -493,6 +468,14 @@ class menu {
                 $html .= $this->getMenuItem("homeuseprogram", "Home Use Program (Office)", "fa fa-file-word");
             }
 
+           
+            if($this->isActive("downloads")) {
+                $html .= $this->getMenuItem("downloads", "Unterrichtsdownloads", "fa fa-child");
+            }
+            if($this->isActive("downloads") && DB::getSession()->isTeacher()) {
+                $html .= $this->getMenuItem("downloadsteacher", "Lehrerdownloads", "fa fa-male");
+            }
+            
             
             $html .= $this->endDropDown();
         }
@@ -500,15 +483,11 @@ class menu {
         
         $html .= $this->getMenuItem("schulinfo", "Schulinformationen", "fa fa-info-circle");
         
-        $html .= $this->getExtensionLink('info');
-
+        
         if($html != "") {
             
             $this->html .= $html;
-            
         }
-
-        
   }
   
   private function lehrerAnwendungen() {
@@ -670,10 +649,7 @@ class menu {
     if($html != "") {
         $this->html .= $this->getTrenner('<i class="fa fa-graduation-cap"></i> Lehreranwendungen');
         
-        $html .= $this->getExtensionLink('teacher');
-
         $this->html .= $html;
-        
     }
     
     
@@ -925,9 +901,6 @@ class menu {
     
     if($html != "") {
         $this->html .= $this->getTrenner('<i class="fa fas fa-pencil-alt-square"></i> Verwaltung</i>');
-        
-        $html .= $this->getExtensionLink('verwaltung');
-
         $this->html .= $html;
     }
     
@@ -962,7 +935,7 @@ class menu {
 
    $this->html .= $this->getMenuItem('MessageInbox', "Nachrichten", "fa fa-envelope");
 
-   $this->html .= $this->getExtensionLink('user');
+
   }
   
   private function unterricht() {
@@ -974,8 +947,12 @@ class menu {
           $html .= $this->getMenuItem("Lerntutoren", "Lerntutoren", "fa fa-graduation-cap");
       }
 
-    if((($this->isActive("mebis"))&& (DB::getSession()->isTeacher() || DB::getSession()->isPupil()))) {
-      $html .= $this->startDropDown(['mebis'], "Unterrichtstools", "fa fa-cubes");
+    if((($this->isActive("mebis") || $this->isActive("database"))&& (DB::getSession()->isTeacher() || DB::getSession()->isPupil()))) {
+      $html .= $this->startDropDown(['mebis','database'], "Unterrichtstools", "fa fa-cubes");
+
+      if($this->isActive("database")) {
+        $html .= $this->getMenuItem("database", "MySQL Datenbanken", "fa fa-database");
+      }
 
       if($this->isActive("mebis") && (DB::getSession()->isTeacher() || (DB::getSession()->isPupil() && DB::getSettings()->getBoolean('mebis-schueler')))) {
         $html .= $this->getMenuItem("mebis", "Mebis Account", "fa fa-compass");
@@ -987,7 +964,6 @@ class menu {
     if($html != "") {
         
         $this->html .= $this->getTrenner('<i class="fa fa-graduation-cap"></i> Unterricht</i>');
-        $html .= $this->getExtensionLink('lesson');
         $this->html .= $html;
     }
 
@@ -996,8 +972,6 @@ class menu {
   
   private function unsorted() {
 
-    $html .= $this->getExtensionLink('unsorted');
-    $this->html .= $html;
 
   }
 

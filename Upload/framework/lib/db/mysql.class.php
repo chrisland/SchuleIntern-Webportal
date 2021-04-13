@@ -104,29 +104,8 @@ class mysql {
 		$returnarray = $this->fetch_array($this->query_id);
 		$this->free_result($this->query_id);
 
-		// Debugger::debugQuery($debug);
-		return $returnarray;
-	}
-
-	public function query_all($query_string, $silent = 0) {
-
-		$debug = array();
-		$debug['query'] = $query_string;
-
-		$this->query_id = mysqli_query($this->mysqli, $query_string);
-
-		if (!$this->query_id && $silent == 0) {
-			$this->print_error("Invalid SQL: ".$query_string);
-			$debug['error'] = "Invalid SQL: ".$query_string;
-		}
-		$ret = [];
-		while($row = mysqli_fetch_array($this->query_id, MYSQLI_ASSOC)) {
-			$ret[] = $row;
-		}
-		$this->free_result($this->query_id);
-
 		Debugger::debugQuery($debug);
-		return $ret;
+		return $returnarray;
 	}
 
 	public function num_rows($query_id=-1) {
@@ -154,8 +133,7 @@ class mysql {
     return mysqli_real_escape_string($this->mysqli, $string);
   }
 
-  /**
-   * Kodiert String mit Sonderzeichen in DB konform
+  /** Kodiert String mit Sonderzeichen in DB konform
    * siehe: decodeString()
    * @author: Christian Marienfeld
    * 

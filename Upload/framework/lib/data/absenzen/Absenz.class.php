@@ -252,7 +252,7 @@ class Absenz {
   }
 
   public function setJetztGekommen() {
-    $stunde = stundenplan::getCurrentStunde();
+    $stunde = stundenplan::getCurrentStunde(date("H"),date("i"));
 
     $stunden = array();
     for($i = 1; $i <= $stunde; $i++) {
@@ -264,11 +264,6 @@ class Absenz {
     DB::getDB()->query("UPDATE absenzen_absenzen SET absenzKommtSpaeter='0' WHERE absenzID='" . $this->getID() . "'");
   }
 
-  /**
-   * @param $mysqldate
-   * @param $klasse
-   * @return Absenz[]
-   */
   public static function getAbsenzenForDate($mysqldate,$klasse) {
     $data = DB::getDB()->query("SELECT * FROM absenzen_absenzen LEFT JOIN schueler ON absenzen_absenzen.absenzSchuelerAsvID=schueler.schuelerAsvID
         WHERE

@@ -239,10 +239,6 @@ class klassentagebuch extends AbstractPage {
       	$this->addTeacherEntry();
       break;
 
-      case 'exportTeacherBook':
-        $this->exportTeacherBook();
-      break;
-
       case 'editAbsenzStunden':
         $this->editAbsenzStunden();
       break;
@@ -252,14 +248,6 @@ class klassentagebuch extends AbstractPage {
         $this->showCurrentDateAndCurrentGrade();
       break;
     }
-  }
-
-  private function exportTacherBook() {
-      $teacher = DB::getSession()->isTeacher() ? DB::getSession()->getTeacherObject() : null;
-
-      if($teacher == null) new errorPage("Kein Lehrer.");
-
-      // Alle Einträge des Lehrers in chronologischer Reihenfolge exportieren
   }
 
   private function editAbsenzStunden() {
@@ -301,20 +289,20 @@ class klassentagebuch extends AbstractPage {
 
   private function addVerspaetung() {
   	if($this->currentDateSQL == DateFunctions::getTodayAsSQLDate() || DB::isDebug()) {
-
+  	    
   	    for($i = 0; $i < sizeof($_REQUEST['schuelerAsvID']); $i++) {
-
-
+  	        
+      	    
       		$schueler = schueler::getByAsvID($_POST['schuelerAsvID'][$i]);
-
+    
       		if($schueler != null) {
       			DB::getDB()->query("INSERT INTO absenzen_verspaetungen (verspaetungSchuelerAsvID,verspaetungDate,verspaetungMinuten,verspaetungKommentar, verspaetungStunde) values('" . $schueler->getAsvID() . "','" . $this->currentDateSQL . "','" . intval($_POST['verspaetungMinuten']) . "','" . DB::getSession()->getUser()->getUserName() . (($_POST['verspaetungKommentar'] != "") ? (" - " . DB::getDB()->escapeString($_POST['verspaetungKommentar'])) : ("")) . "','" . DB::getDB()->escapeString($_POST['verspaetungStunde']) . "')");
       		}
 
 
   	    }
-
-
+  	    
+  	    
   	    header("Location: index.php?page=klassentagebuch&mode=showGrade&grade=" . $_REQUEST['grade'] . "&currentDate=" . $this->currentDateNatural);
   	    exit(0);
   	}
@@ -326,26 +314,19 @@ class klassentagebuch extends AbstractPage {
 
   private function addAbsenz() {
     if($this->currentDateSQL == DateFunctions::getTodayAsSQLDate()) {
-
+                
       for($s = 0; $s < sizeof($_POST['schuelerAsvID']); $s++) {
-
+          
         $schueler = null;
-
+        
     	$schueler = schueler::getByAsvID($_POST['schuelerAsvID'][$s]);
-
+    	
     	if($schueler != null) {
     		$allStunden = "";
-
-    		// Ab Stunde
-
-            $abStunde = intval($_REQUEST['abStunde']);
-
-            $stunden = [];
-
+    		
     		for($i = 1; $i <= stundenplandata::getMaxStunden(); $i++) {
-    		    if($i >= $abStunde) $stunden[] = $i;
+    			$allStunden .= (($i > 1) ? "," : "") . $i;
     		}
-
     		DB::getDB()->query("INSERT INTO absenzen_absenzen (
             absenzSchuelerAsvID,
             absenzDatum,
@@ -365,7 +346,7 @@ class klassentagebuch extends AbstractPage {
               'LEHRER',
               UNIX_TIMESTAMP(),
               '" . DB::getUserID() . "',
-              '" . implode(",",$stunden) . "',
+              '" . $allStunden . "',
               '0',
               '0',
               'Meldung durch Lehrer (" . DB::getSession()->getTeacherObject()->getKuerzel() . ") aus dem Unterricht (per elektronischem Klassentagebuch)\r\n\r\n'
@@ -759,22 +740,22 @@ class klassentagebuch extends AbstractPage {
     $selectFach = "";
 
     $subjects = $this->currentStundenplan->getAll("subject");
-
+    
     $mySubjects = $this->currentStundenplan->getAllSubjectsForTeacher(DB::getSession()->getTeacherObject()->getKuerzel());
-
-
+    
+    
     $selectFach .= "<optgroup label=\"Meine Fächer\">";
     for($i = 0; $i < sizeof($mySubjects); $i++) {
         $selectFach .= "<option value=\"" . $mySubjects[$i] . "\">" . $mySubjects[$i] . "</option>";
     }
     $selectFach .= "</optgroup>";
-
+    
     $selectFach .= "<optgroup label=\"Andere Fächer\">";
     for($i = 0; $i < sizeof($subjects); $i++) {
         if(!in_array($subjects[$i], $mySubjects)) $selectFach .= "<option value=\"" . $subjects[$i] . "\">" . $subjects[$i] . "</option>";
     }
     $selectFach .= "</optgroup>";
-
+    
 
     eval("DB::getTPL()->out(\"" . DB::getTPL()->get("klassentagebuch/teacher") . "\");");
   }
@@ -932,26 +913,26 @@ class klassentagebuch extends AbstractPage {
 
 
     $selectFach = "";
-
+    
     $subjects = $this->currentStundenplan->getAll("subject");
-
+    
     if(DB::getSession()->isTeacher()) {
-
+    
         $mySubjects = $this->currentStundenplan->getAllSubjectsForTeacher(DB::getSession()->getTeacherObject()->getKuerzel());
-
-
+        
+        
         $selectFach .= "<optgroup label=\"Meine Fächer\">";
         for($i = 0; $i < sizeof($mySubjects); $i++) {
             $selectFach .= "<option value=\"" . $mySubjects[$i] . "\">" . $mySubjects[$i] . "</option>";
         }
         $selectFach .= "</optgroup>";
-
+        
         $selectFach .= "<optgroup label=\"Andere Fächer\">";
         for($i = 0; $i < sizeof($subjects); $i++) {
             if(!in_array($subjects[$i], $mySubjects)) $selectFach .= "<option value=\"" . $subjects[$i] . "\">" . $subjects[$i] . "</option>";
         }
         $selectFach .= "</optgroup>";
-
+    
     }
 
     $tableContent = "";
@@ -962,11 +943,8 @@ class klassentagebuch extends AbstractPage {
 
     $dialogID = 1;
 
-      $stundenSelectNewAbsenz = "";
-
     for($i = 0; $i < stundenplandata::getMaxStunden(); $i++) {
 
-        $stundenSelectNewAbsenz .= "<option value=\"" . ($i+1) . "\">Ab " . ($i+1) . ". Stunde</option>";
 
       $tableContent .= "<tr" . ((($i+1) == $aktuelleStunde) ? (" style=\"background-color: lightgreen\"") : ("")) . "><td>" . ($i+1) ."</td>";
 
@@ -1159,6 +1137,11 @@ class klassentagebuch extends AbstractPage {
 
 	    $krankmeldungenTH = "<th>Stunden</th>";
 
+	    /**
+	    // Krankmeldungen Titel
+	    for($s = 1; $s <= DB::getSettings()->getValue("stundenplan-anzahlstunden"); $s++) {
+	      $krankmeldungenTH .= "<th>$s</th>";
+	    }**/
 
 
 	    // Verspätungen
@@ -1184,94 +1167,76 @@ class klassentagebuch extends AbstractPage {
 	    $absenzen = Absenz::getAbsenzenForDate($this->currentDateSQL, $klasse->getKlassenName());
 
 	    $krankmeldungenHTML = "";
-
-	    $krankmeldungenHTMLOffen = "";
-
 	      for($i = 0; $i < sizeof($absenzen); $i++) {
+	        $offen = "edit";
 
-	          $stunden = $absenzen[$i]->getStundenAsArray();
+	        $krankmeldungenHTML .= "<td>" . $absenzen[$i]->getSchueler()->getCompleteSchuelerName() . "";
 
-	        $absenzHTML = "<td>" . $absenzen[$i]->getSchueler()->getCompleteSchuelerName();
-
-              if($absenzen[$i]->getKommentar() != "") {
-                  $absenzHTML .= " <a href=\"#\" data-toggle=\"tooltip\" title=\"" . @htmlspecialchars(($absenzen[$i]->getKommentar())) . "\"><i class=\"fa fa-sticky-note\"></i></a> ";
-              }
-
-
-              if($absenzen[$i]->isMehrtaegig()) {
-                  $absenzHTML .= "<br /><small>Von " . DateFunctions::getNaturalDateFromMySQLDate($absenzen[$i]->getDateAsSQLDate()) . " bis " . DateFunctions::getNaturalDateFromMySQLDate($absenzen[$i]->getEnddatumAsSQLDate()) . "</small>";
-              }
-
-              $absenzHTML .= "</td>";
-
-              $absenzHTML .= "<td>" . implode(", ", $stunden) . "</td>";
-
-              $absenzHTML .= "<td>";
-
-	        if($absenzen[$i]->isBefreiung()) {
-                $absenzHTML .= "<p><span class=\"label label-info\">Befreiung</span></p>";
+	        if(!$absenzen[$i]->isEntschuldigt()) {
+	          $krankmeldungenHTML .= " <span class=\"label label-danger\">Ungeklärt</span>";
 	        }
 
+	        if($absenzen[$i]->isBefreiung()) {
+	          $krankmeldungenHTML .= " <span class=\"label label-info\">Befreiung</span> ";
+	        }
+
+	        if($absenzen[$i]->getKommentar() != "") {
+	          $krankmeldungenHTML .= " <a href=\"#\" data-toggle=\"tooltip\" title=\"" . @htmlspecialchars(($absenzen[$i]->getKommentar())) . "\"><i class=\"fa fa-sticky-note\"></i></a> ";
+	        }
 
 	        if($absenzen[$i]->kommtSpaeter()) {
-                $absenzHTML .= "<p><span class=\"label label-danger\"><i class=\"fa fa-clock\"></i> Kommt später</span></p>";
+	          $krankmeldungenHTML .= " <span class=\"label label-danger\"><i class=\"fa fa-clock\"></i> Kommt später</span>";
 	        }
 
 	        if($absenzen[$i]->isBeurlaubung()) {
-                $absenzHTML .= "<p><span class=\"label label-info\">Beurlaubung</span></p>";
+	          $krankmeldungenHTML .= " <span class=\"label label-info\">Beurlaubung</span>";
 	          if($absenzen[$i]->getBeurlaubung()->isInternAbwesend()) {
-                  $absenzHTML .= "<p><span class=\"label label-info\">Intern abwesend</span></p>";
+	            $krankmeldungenHTML .= " <span class=\"label label-info\">Intern abwesend</span>";
 	          }
 
 	        }
 
-	        if($absenzen[$i]->needSchriftlichEntschuldigung()) {
-                if($absenzen[$i]->isSchriftlichEntschuldigt()) {
-                    $absenzHTML .= "<p><small class=\"label label-success\"><i class=\"fa fas fa-pencil-alt\"></i><i class=\"fa fa-check\"></i> Schriftlich entschuldigt</small></p>";
-                }
-                else {
-                    $absenzHTML .= "<p><small class=\"label label-warning\"><i class=\"fa fas fa-pencil-alt\"></i><i class=\"fa fa-ban\"></i> Nicht schriftlich entschuldigt</small></p>";
+	        if($absenzen[$i]->isSchriftlichEntschuldigt()) {
+	          $krankmeldungenHTML .= " <small class=\"label label-success\"><i class=\"fa fas fa-pencil-alt\"></i><i class=\"fa fa-check\"></i></small>";
+	        }
+	        else {
+	          $krankmeldungenHTML .= " <small class=\"label label-warning\"><i class=\"fa fas fa-pencil-alt\"></i><i class=\"fa fa-ban\"></i></small>";
 
-                }
-            }
-
-
-
-                $absenzHTML .= "</td>";
-                $absenzHTML .= "<td>";
+	        }
 
 	        if($absenzen[$i]->getUserID() == DB::getUserID()) {
-                $absenzHTML.= "<p><button type=\"button\" class=\"btn btn-sm btn-warning btn-block\" onclick=\"confirmAction('Soll der Eintrag wirklich gelöscht werden?','index.php?page=klassentagebuch&mode=deleteAbsenz&absenzID=" . $absenzen[$i]->getID() . "&grade=" . $_REQUEST['grade'] . "&currentDate=" . $this->currentDateNatural . "')\"><i class=\"fa fa-trash\"></i> Absenz löschen</button></p>" ;
+	        	$krankmeldungenHTML.= " <button class=\"btn btn-xs btn-danger\" onclick=\"confirmAction('Soll der Eintrag wirklich gelöscht werden?','index.php?page=klassentagebuch&mode=deleteAbsenz&absenzID=" . $absenzen[$i]->getID() . "&grade=" . $_REQUEST['grade'] . "&currentDate=" . $this->currentDateNatural . "')\"><i class=\"fa fa-trash\"></i></button> " ;
 	        }
 
 	        if(!$absenzen[$i]->isEntschuldigt()) {
-                $absenzHTML .= "<p><button type=\"button\" class=\"btn btn-sm btn-success btn-block\" data-toggle=\"modal\" data-target=\"#editAbsenzStunden\" onclick=\"javascript:jetztGekommen(" . $absenzen[$i]->getID() . ",'" . implode("#",$stunden) . "'," . 0 . ")\"><i class=\"fa fa-clock\"></i> Jetzt gekommen</button></p>";
+	            $krankmeldungenHTML .= "<br /><button type=\"buton\" class=\"btn btn-sm\" data-toggle=\"modal\" data-target=\"#editAbsenzStunden\" onclick=\"javascript:jetztGekommen(" . $absenzen[$i]->getID() . ",'" . implode("#",$stunden) . "'," . 0 . ")\"><i class=\"fa fa-clock\"></i> Jetzt gekommen</button>";
 	        }
 
 
+	        $krankmeldungenHTML .= "</td>";
 
+	        $stunden = $absenzen[$i]->getStundenAsArray();
 
+	        $krankmeldungenHTML .= "<td>" . implode(", ", $stunden);
 
 
 	        if($this->currentDateSQL == DateFunctions::getTodayAsSQLDate()) {
-                $absenzHTML .= "<p><button type=\"buton\" class=\"btn btn-sm btn-default btn-block\" data-toggle=\"modal\" data-target=\"#editAbsenzStunden\" onclick=\"javascript:editStunden(" . $absenzen[$i]->getID() . ",'" . implode("#",$stunden) . "'," . !$absenzen[$i]->isEntschuldigt() . ")\"><i class=\"fa fas fa-pencil-alt\"></i> Stunden bearbeiten</button></p>";
+
+                $krankmeldungenHTML .= "<br /><button type=\"buton\" class=\"btn btn-sm\" data-toggle=\"modal\" data-target=\"#editAbsenzStunden\" onclick=\"javascript:editStunden(" . $absenzen[$i]->getID() . ",'" . implode("#",$stunden) . "'," . !$absenzen[$i]->isEntschuldigt() . ")\"><i class=\"fa fas fa-pencil-alt\"></i> Stunden bearbeiten</button>";
 	        }
 
-              $absenzHTML .= "</td>";
+	        $krankmeldungenHTML .= "</td>";
 
 
-
-
-
-              $absenzHTML .= "</tr>";
-
-
-	        if($absenzen[$i]->isEntschuldigt()) {
-                $krankmeldungenHTML .= $absenzHTML;
-            }
+	        if($absenzen[$i]->isMehrtaegig()) {
+	          $krankmeldungenHTML .= "<td>" . DateFunctions::getNaturalDateFromMySQLDate($absenzen[$i]->getEnddatumAsSQLDate()) . "</td>";
+	        }
 	        else {
-                $krankmeldungenHTMLOffen .= $absenzHTML;
-            }
+	          $krankmeldungenHTML .= "<td></td>";
+	        }
+
+
+	        $krankmeldungenHTML .= "</tr>";
 	      }
 
 
@@ -1328,7 +1293,7 @@ class klassentagebuch extends AbstractPage {
     	$anzahlStundenGesamt = stundenplandata::getMaxStunden();
 
     	$aktuelleStunde = stundenplan::getCurrentStunde();
-
+    	
     }
 
     eval("DB::getTPL()->out(\"" . DB::getTPL()->get("klassentagebuch/klasse") . "\");");

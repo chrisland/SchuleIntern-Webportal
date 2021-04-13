@@ -14,6 +14,12 @@ $classes = [
 		'ajax',
 		'showHideElements',
 	],
+	'api' => [
+		'AbstractApi',
+		'GetSchoolData',
+		'SingleSignOn',
+	],
+    
     'ausweise' => [
         'AbstractAusweis',
         'Schulausweis',
@@ -42,20 +48,17 @@ $classes = [
 		'SyncUsers',
 		'CreateDemoVplan',
 		'UpdateExterneKalender',
-	    'CreateOffice365Users',
-	    'HeartbeatToManagementPortal',
-	    'TagebuchFehlSucher',
-	    'FerienDownloader',
-	    'CronGarbageCollector',
-	    'CronNextCloud',
-	    'CronVerspaetungAuswertung',
-	    'CreateTagebuchPDFs',
-        'DeleteOldElternUser',
-        'MailSendDeleter',
-        'CronStatMaker',
-        'SprechtagVikoCreator',
-    'AllInOneKalenderFerien'
-
+		'CreateOffice365Users',
+		'HeartbeatToManagementPortal',
+		'TagebuchFehlSucher',
+		'FerienDownloader',
+		'CronGarbageCollector',
+		'CronNextCloud',
+		'CronVerspaetungAuswertung',
+		'CreateTagebuchPDFs',
+			// 'CronAllInklMail',
+			'DeleteOldElternUser',
+			'AllInOneKalenderFerien'
 	],
 	'data/schulbuch' => [
 		'BuchAusleihe',
@@ -73,6 +76,7 @@ $classes = [
 		'klasse',
 		'lehrer',
 		'MatchUsersFunctions',
+		'pupil',
 		'schueler',
 		'SchuelerAdresse',
 		'SchuelerTelefonnummer',
@@ -91,10 +95,6 @@ $classes = [
         'AbsenzVerspaetung',
         'AbsenzEntschuldigungGenerator',
         'AbsenzEntschuldigung',
-        'AbsenzSchuelerInfo',
-        'Absenz',
-        'AbsenzBefreiung',
-        'AbsenzBeurlaubung',
         'AbsenzSchuelerInfo'
     ],    
     'data/respizienz' => [
@@ -133,12 +133,9 @@ $classes = [
 	'data/vplan' => [
 		'TIMEUpdate'
 	],
-    'data/schueler' => [
-        'SchuelerFremdsprache',
-        'SchuelerQuarantaene'
-    ],
 	'db' => [
 		'mysql',
+		'mysqldevdatabases',
 		'dbStruct',
 	],
 	'email' => [
@@ -175,8 +172,7 @@ $classes = [
 		'PAGE',
 		'FILE',
 		'FACTORY',
-		'ACL',
-        'Cache'
+		'ACL'
 
 	],
 	'tpl' => [
@@ -197,9 +193,6 @@ $classes = [
 		'TagebuchKlasseEntry',
 	    'TagebuchPDFCreator'
 	],
-    'data/stat' => [
-        'UserLoginStat'
-    ],
 	'print' => [
 		'PrintNormalPageA4WithHeader',
 		'PrintLetterWithWindowA4',
@@ -345,6 +338,8 @@ function schuleinternautoloader($class) {
 	foreach($classes as $c => $d) {
 		for($i = 0; $i < sizeof($d); $i++) {
 			if(strtolower($d[$i]) == strtolower($class)) {
+			    // echo($class . "<br>");
+			    
 				include_once('../framework/lib/' . $c . '/' . $d[$i] . ".class.php");
 				return;
 			}

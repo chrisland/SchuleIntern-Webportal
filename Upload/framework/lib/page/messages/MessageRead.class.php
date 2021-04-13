@@ -168,7 +168,7 @@ class MessageRead extends AbstractPage {
         exit(0);
     }
     else if($_POST['action'] == 'deleteMessage') {
-    	MessageFolder::getFolder(DB::getSession()->getUser(), $message->getFolder(), $folderID)->deleteMessages([$message->getID()]);
+    	MessageFolder::getFolder(DB::getSession()->getUser, $message->getFolder(), $folderID)->deleteMessages([$message->getID()]);
     	header("Location: index.php?page=MessageInbox&folder=" . $message->getFolder());
     	exit(0);
     }
@@ -178,12 +178,7 @@ class MessageRead extends AbstractPage {
 
     $allRecipients = [];
     for($i = 0; $i < sizeof($recipients); $i++) {
-        if($recipients[$i] != null && $this->message->getMyRecipient() != null && $recipients[$i]->getSaveString() == $this->message->getMyRecipient()->getSaveString()) {
-            $allRecipients[] = "<strong>" . $recipients[$i]->getDisplayName()  ."</strong>";
-        }
-        else {
-            $allRecipients[] = $recipients[$i]->getDisplayName();
-        }
+      $allRecipients[] = $recipients[$i]->getDisplayName();
     }
     
     $ccRecipients = $this->message->getCCRecipients();
@@ -759,7 +754,7 @@ class MessageRead extends AbstractPage {
               $html .= "<table width=\"100%\" border=\"1\" cellpadding=\"3\"><tr><th width=\"5%\"><b>#</b></th><th><b>Name</b></th>";
               
               for($q = 0; $q < sizeof($questions); $q++) {
-                  $html .= "<th>" . $questions[$q]->getQuestionText() . "</th>";
+                  $html .= '<th width="15%">' . $questions[$q]->getQuestionText() . "</th>";
               }
               
               $html .= "</tr>";
