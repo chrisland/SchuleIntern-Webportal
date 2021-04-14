@@ -530,7 +530,7 @@ class MessageCompose extends AbstractPage {
 				
 				$messageSender->send();
 								
-				header("Location: index.php?page=MessageInbox&folder=GESENDETE");
+				header("Location: index.php?page=MessageInbox&folder=POSTEINGANG");
 				exit(0);
 			break;
 
