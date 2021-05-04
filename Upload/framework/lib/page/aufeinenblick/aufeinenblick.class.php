@@ -49,6 +49,14 @@ class aufeinenblick extends AbstractPage {
 
   public function execute() {
 
+
+    if($_REQUEST['action'] == 'aufeinenblickImg') {
+      $upload = DB::getSettings()->getUpload('aufeinenblick-img');
+      if($upload != null) $upload->sendFile();
+      exit;
+    }
+
+
     if($_GET['mode'] == "settings") {
       // Einstellungen
 
@@ -137,8 +145,9 @@ class aufeinenblick extends AbstractPage {
       PAGE::kill(true);
       //exit(0);
     }
+    //TODO: wirft ein fehler | from chris apr 2021
+    //Stundenplan::getCurrentStunde();
 
-    Stundenplan::getCurrentStunde();
 
 
     // Stundenplan heute laden
@@ -287,6 +296,12 @@ class aufeinenblick extends AbstractPage {
     }
 
     $HTML = "";
+
+    $upload = DB::getSettings()->getUpload('aufeinenblick-img');
+    if($upload != null) {
+      $HTML .= "<br><img src='index.php?page=aufeinenblick&action=aufeinenblickImg' /><br><br>";
+    }
+
 
     if (DB::getSession ()->isTeacher ()) {
 
@@ -704,11 +719,12 @@ class aufeinenblick extends AbstractPage {
 
     eval ( "\$html = \"" . DB::getTPL ()->get ( "aufeinenblick/heutemorgen" ) . "\";" );
 
+
     return $html;
   }
 
   public static function hasSettings() {
-    return false;
+    return true;
   }
 
   public static function getSiteDisplayName() {
@@ -717,8 +733,12 @@ class aufeinenblick extends AbstractPage {
 
   public static function getSettingsDescription() {
     return array(
-
-
+        [
+            'name' => 'aufeinenblick-img',
+            'typ' => 'BILD',
+            'titel' => 'Bild für die AufEinenBlickSeite',
+            'text' => ''
+        ]
     );
   }
 
@@ -731,7 +751,7 @@ class aufeinenblick extends AbstractPage {
   }
 
   public static function hasAdmin() {
-    return false;
+    return true;
   }
 
   public static function getAdminGroup() {
