@@ -15,7 +15,6 @@ class test extends AbstractPage {
       // Put Tests here.
       // Only access for Admins
 
-    print_r(Office365Login::getEmployeeID());
 
   }
 
@@ -45,7 +44,7 @@ class test extends AbstractPage {
 
 
   public static function getSiteDisplayName() {
-    return 'Captcha auslesen';
+    return 'Tests';
   }
 
   /**
