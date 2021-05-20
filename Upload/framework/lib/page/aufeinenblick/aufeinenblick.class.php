@@ -3,11 +3,11 @@
 class aufeinenblick extends AbstractPage {
 
   private $mySettings = array(
-    "aufeinenblinkSettingsID" => 0,
-    "aufeinenblickHourCanceltoday" => 15,
-    "aufeinenblickShowVplan" => 1,
-    "aufeinenblickShowCalendar" => 1,
-    "aufeinenblickShowStundenplan" => 0
+      "aufeinenblinkSettingsID" => 0,
+      "aufeinenblickHourCanceltoday" => 15,
+      "aufeinenblickShowVplan" => 1,
+      "aufeinenblickShowCalendar" => 1,
+      "aufeinenblickShowStundenplan" => 0
   );
 
   protected $helpPage = "";
@@ -15,14 +15,14 @@ class aufeinenblick extends AbstractPage {
   public function __construct() {
 
     parent::__construct ( array (
-      "Auf einen Blick"
+        "Auf einen Blick"
     ) );
 
     $this->checkLogin();
 
     if(!DB::getSession()->isTeacher() && !DB::getSession()->isPupil() && !DB::getSession()->isEltern()) {
       eval("DB::getTPL()->out(\"" . DB::getTPL()->get("index") . "\");");
-      
+
       PAGE::kill(true);
 
       //exit(0);
@@ -356,25 +356,25 @@ class aufeinenblick extends AbstractPage {
     $showKlassentagebuchButton = false;
 
     if($this->isActive("klassentagebuch")) {
-        if(DB::getSession()->isEltern() && DB::getSettings()->getBoolean('klassentagebuch-eltern-klassentagebuch'))
-            $showKlassentagebuchButton = true;
+      if(DB::getSession()->isEltern() && DB::getSettings()->getBoolean('klassentagebuch-eltern-klassentagebuch'))
+        $showKlassentagebuchButton = true;
 
-         else if(DB::getSession()->isTeacher())
-             $showKlassentagebuchButton = true;
-         else if(DB::getSession()->isPupil() && DB::getSettings()->getBoolean('klassentagebuch-schueler-klassentagebuch'))
-             $showKlassentagebuchButton = true;
+      else if(DB::getSession()->isTeacher())
+        $showKlassentagebuchButton = true;
+      else if(DB::getSession()->isPupil() && DB::getSettings()->getBoolean('klassentagebuch-schueler-klassentagebuch'))
+        $showKlassentagebuchButton = true;
 
-         else if(DB::getSession()->isMember('Webportal_Klassentagebuch_Lesen'))
-             $showKlassentagebuchButton = true;
+      else if(DB::getSession()->isMember('Webportal_Klassentagebuch_Lesen'))
+        $showKlassentagebuchButton = true;
 
-        if(DB::getSettings()->getBoolean('klassentagebuch-lehrertagebuch') && DB::getSession()->isTeacher())
-            $showLehrerTagebuchButton = true;
+      if(DB::getSettings()->getBoolean('klassentagebuch-lehrertagebuch') && DB::getSession()->isTeacher())
+        $showLehrerTagebuchButton = true;
     }
 
 
     eval ( "echo(\"" . DB::getTPL ()->get ( "aufeinenblick/index" ) . "\");" );
   }
-  
+
   private function getToday($plan, $title, $datum, $dayOfWeek, $planTitles) {
     $datumTermine = $datum;
 
@@ -486,7 +486,7 @@ class aufeinenblick extends AbstractPage {
 
         if (DB::getSession ()->isTeacher ()) {
           if(DB::getGlobalSettings()->stundenplanSoftware == "SPM++") {
-              if(DB::getGlobalSettings()->stundenplanSoftwareVersion == "2" || DB::getGlobalSettings()->stundenplanSoftwareVersion == "1") {
+            if(DB::getGlobalSettings()->stundenplanSoftwareVersion == "2" || DB::getGlobalSettings()->stundenplanSoftwareVersion == "1") {
 
               $search = DB::getSession ()->getTeacherObject()->getKuerzel();
 
@@ -541,7 +541,7 @@ class aufeinenblick extends AbstractPage {
           }
 
           if(DB::getGlobalSettings()->stundenplanSoftware == "TIME2007") {
-              $searchText = strtoupper( $searchText );
+            $searchText = strtoupper( $searchText );
             $header = "<h4>Meine Vertretungen</h4><table class=\"table table-bordered\"><tr><th>Klasse</th><th>Std.</th><th>Lehrer/Fach</th><th>vertr. durch</th><th>Fach</th><th>Raum</th><th>Bemerkung</th></tr>";
 
 
@@ -562,9 +562,9 @@ class aufeinenblick extends AbstractPage {
 
 
           if(DB::getGlobalSettings()->stundenplanSoftware == "TIME2007") {
-              $searchText = strtoupper( $searchText );
-              $header = "<h4>Meine Vertretungen</h4><table class=\"table table-striped\"><tr><th>Klasse</th><th>Vertretung</th><th>Stunde</th><th>Fach</th><th>Lehrer</th><th>Raum</th><th>Sonstiges</th></tr>";
-              
+            $searchText = strtoupper( $searchText );
+            $header = "<h4>Meine Vertretungen</h4><table class=\"table table-striped\"><tr><th>Klasse</th><th>Vertretung</th><th>Stunde</th><th>Fach</th><th>Lehrer</th><th>Raum</th><th>Sonstiges</th></tr>";
+
 
           }
 
@@ -639,59 +639,80 @@ class aufeinenblick extends AbstractPage {
       // Klassenkalender
 
     }
-      $eventSources = [];
+    $eventSources = [];
 
 
 
-      $lnwHTML = "";
+    $lnwHTML = "";
 
-      if (DB::getSession ()->isTeacher ()) {
-        $lehrer = DB::getSession ()->getTeacherObject()->getKuerzel();
+    if (DB::getSession ()->isTeacher ()) {
+      $lehrer = DB::getSession ()->getTeacherObject()->getKuerzel();
 
-        $classes = klasse::getByUnterrichtForTeacher(DB::getSession()->getTeacherObject());
+      $classes = klasse::getByUnterrichtForTeacher(DB::getSession()->getTeacherObject());
 
-        for($i = 0; $i < sizeof($classes); $i++) {
-            $eventSources[] = 'index.php?page=klassenkalender&grade=' . urlencode($classes[$i]->getKlassenName()) . '&action=getJSONData&showGrade=1';
+      for($i = 0; $i < sizeof($classes); $i++) {
+        $eventSources[] = 'index.php?page=klassenkalender&grade=' . urlencode($classes[$i]->getKlassenName()) . '&action=getJSONData&showGrade=1';
+      }
+
+    } else {
+
+      $grades = [];
+
+      if(DB::getSession()->isEltern()) {
+        $grades = DB::getSession()->getElternObject()->getKlassenObjectsAsArray();
+      }
+      else if(DB::getSession()->isPupil()) {
+        $grades = [DB::getSession()->getPupilObject()->getKlassenObjekt()];
+      }
+
+      for($i = 0; $i < sizeof($grades); $i++) {
+        $eventSources[] = 'index.php?page=klassenkalender&grade=' . urlencode($grades[$i]->getKlassenName()) . '&action=getJSONData&showGrade=1';
+      }
+    }
+
+    // Andere Kalender
+
+    $andereKalender = andereKalender::getKalenderWithAccess();
+
+    for($i = 0; $i < sizeof($andereKalender); $i++) {
+      $eventSources[] = 'index.php?page=andereKalender&kalenderID=' . $andereKalender[$i]['kalenderID']. '&action=getJSONData';
+    }
+
+    // Externe Kalender
+
+    $externeKalender = extKalender::getKalenderWithAccess();
+
+    for($i = 0; $i < sizeof($externeKalender); $i++) {
+      $eventSources[] = 'index.php?page=extKalender&kalenderID=' . $externeKalender[$i]['kalenderID']. '&action=getJSONData';
+    }
+
+    // Kalender All In One
+
+    $kalenderAllInOne = kalenderAllInOne::getEintragFromDate($datum);
+
+    $kalenderHTML = '<ul class="noListStyle">';
+    foreach($kalenderAllInOne as $calEvent) {
+      $kalenderHTML .= '<li class="padding-l-m padding-t-s padding-b-s border-b-hell">';
+      if ($calEvent['eintragTimeStart'] != '00:00:00') {
+        if ($calEvent['eintragDatumEnde'] != '00:00:00') {
+          $kalenderHTML .= '<span class="inlineBlock width-20p text-bold">'.mb_substr($calEvent['eintragTimeStart'],0,-3).' - '.mb_substr($calEvent['eintragTimeEnde'],0,-3).'</span>';
+        } else {
+          $kalenderHTML .= '<span class="inlineBlock width-20p text-bold">'.mb_substr($calEvent['eintragTimeStart'],0,-3).'</span>';
         }
-
       } else {
-       
-        $grades = [];
-        
-        if(DB::getSession()->isEltern()) {
-            $grades = DB::getSession()->getElternObject()->getKlassenObjectsAsArray();
-        }
-        else if(DB::getSession()->isPupil()) {
-            $grades = [DB::getSession()->getPupilObject()->getKlassenObjekt()];
-        }
-          
-        for($i = 0; $i < sizeof($grades); $i++) {
-            $eventSources[] = 'index.php?page=klassenkalender&grade=' . urlencode($grades[$i]->getKlassenName()) . '&action=getJSONData&showGrade=1';
-        }
+        $kalenderHTML .= '<span class="inlineBlock width-20p"></span>';
       }
+      $kalenderHTML .= '<span class="text-small inlineBlock width-25p" style="color:'.$calEvent['kalender']['kalenderColor'].'">'.$calEvent['kalender']['kalenderName'].'</span>';
+      $kalenderHTML .= '<span class="" >'.$calEvent['eintragTitel'].'</span>';
+      $kalenderHTML .= '</li>';
+    }
+    $kalenderHTML .= '<ul>';
 
-      // Andere Kalender
+    $calFeeds = "";
 
-      $andereKalender = andereKalender::getKalenderWithAccess();
+    $calFeeds = implode("','",$eventSources);
 
-      for($i = 0; $i < sizeof($andereKalender); $i++) {
-          $eventSources[] = 'index.php?page=andereKalender&kalenderID=' . $andereKalender[$i]['kalenderID']. '&action=getJSONData';
-      }
-
-      // Externe Kalender
-      
-      $externeKalender = extKalender::getKalenderWithAccess();
-      
-      for($i = 0; $i < sizeof($externeKalender); $i++) {
-          $eventSources[] = 'index.php?page=extKalender&kalenderID=' . $externeKalender[$i]['kalenderID']. '&action=getJSONData';
-      }
-
-    
-      $calFeeds = "";
-      
-      $calFeeds = implode("','",$eventSources);
-      
-      if($calFeeds != "") $calFeeds = "'" . $calFeeds . "'";
+    if($calFeeds != "") $calFeeds = "'" . $calFeeds . "'";
 
     $vplanCollapse = (($this->mySettings['aufeinenblickShowVplan'] == 0) ? (" collapsed-box") : (""));
     $calendarCollapse = (($this->mySettings['aufeinenblickShowCalendar'] == 0) ? (" collapsed-box") : (""));

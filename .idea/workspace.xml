@@ -23,64 +23,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dbfa2314-6c6d-4c61-8bc9-f3afb011cf6c" name="Default Changelist" comment="Anpassungen Klassentagebuch">
+      <change afterPath="$PROJECT_DIR$/Upload/framework/lib/cron/AllInOneKalenderFerien.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/ClassLoader.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/ClassLoader.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/InstalledVersions.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/InstalledVersions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_classmap.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_classmap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_files.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_files.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_namespaces.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_namespaces.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_psr4.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_psr4.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_real.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_real.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_static.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/autoload_static.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/installed.json" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/installed.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/installed.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/installed.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/platform_check.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/composer/platform_check.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/CONTRIBUTING.md" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/CONTRIBUTING.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/coverage.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/coverage.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/cs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/cs.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/tests.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/.github/workflows/tests.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/phpunit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/phpunit.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Codabar.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Codabar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code11.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code11.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code128.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code128.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code39.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code39.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code93.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Code93.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/EanExt.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/EanExt.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/EanUpc.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/EanUpc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/I25.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/I25.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Msi.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/Msi.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/S25.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Barcode/S25.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Cache.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Cache.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Config/ConfigVariables.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Config/ConfigVariables.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/FpdiTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/FpdiTrait.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Image/ImageProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Image/ImageProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Image/Svg.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Image/Svg.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Mpdf.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Mpdf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/OtlDump.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/OtlDump.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/ServiceFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/ServiceFactory.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Shaper/Indic.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/mpdf/mpdf/src/Shaper/Indic.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Mbstring.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Mbstring.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/lowerCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/lowerCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/titleCaseRegexp.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/titleCaseRegexp.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/upperCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/Resources/unidata/upperCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/bootstrap.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/bootstrap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-mbstring/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Php80.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Php80.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/ValueError.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/Resources/stubs/ValueError.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/bootstrap.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/bootstrap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/composer/vendor/symfony/polyfill-php80/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/framework/versioninfo.json" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/versioninfo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/menu/menu.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/menu/menu.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/page/abstractPage.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/page/abstractPage.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/page/aufeinenblick/aufeinenblick.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/page/aufeinenblick/aufeinenblick.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/page/beobachtungsbogen/beobachtungsbogen.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/page/beobachtungsbogen/beobachtungsbogen.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/rest/RestGetAcl.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/rest/RestGetAcl.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/system/cronhandler.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/system/cronhandler.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/system/requesthandler.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/system/requesthandler.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/system/resthandler.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/system/resthandler.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/lib/system/schuleinternautoloader.php" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/lib/system/schuleinternautoloader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/framework/templates/beobachtungsbogen/eintragen/allinone/index.htm" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/framework/templates/beobachtungsbogen/eintragen/allinone/index.htm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,20 +66,22 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Upload/www/cssjs/plugins/tinymce/langs" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Upload/framework/lib/cron" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="php.override.implement.member.chooser.php.doc" value="NONE" />
+    <property name="two.files.diff.last.used.file" value="$USER_HOME$/Desktop/rgintern/20210520/framework/lib/rest/RestGetAcl.class.php" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Upload/framework/lib/cron" />
       <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\www\cssjs\plugins\tinymce\langs" />
       <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\www\cssjs\plugins\tinymce" />
       <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\www\cssjs\font\fontawesome" />
       <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\framework\lib\data\absenzen" />
-      <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\framework\lib\cron" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Upload/framework/lib/cron" />
       <recent name="D:\Workspaces\SchuleIntern\Webportal\Upload\framework\templates\absenzenv2" />
     </key>
   </component>

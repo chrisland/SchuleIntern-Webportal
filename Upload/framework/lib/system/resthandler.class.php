@@ -26,7 +26,11 @@ class resthandler {
         'SetMensaMeal',
         'SetMensaOrder',
         'GetAcl',
-        'SetAcl'
+        'SetAcl',
+        'GetKalender',
+        'GetKalenderEintrag',
+        'SetKalenderEintrag',
+        'DeleteKalenderEintrag'
     ];
   
   

@@ -53,7 +53,8 @@ $classes = [
         'DeleteOldElternUser',
         'MailSendDeleter',
         'CronStatMaker',
-        'SprechtagVikoCreator'
+        'SprechtagVikoCreator',
+        'AllInOneKalenderFerien'
 	],
 	'data/schulbuch' => [
 		'BuchAusleihe',
