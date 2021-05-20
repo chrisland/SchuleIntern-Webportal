@@ -41,6 +41,10 @@
                         <label class="margin-l-m">Ferien</label>
                         <span v-if="item.kalenderFerien" class="text-red text-small margin-l-m">Vorsicht: Manuell erstellte Kalendereinträge werden durch das System gelöscht.</span>
                       </div>
+                      <div>
+                        <input type="checkbox" v-model="item.kalenderPublic" true-value="1" false-value="0" />
+                        <label class="margin-l-m">Veröffentlichen (ICS)</label>
+                      </div>
                     </div>
 
                     <div class="padding-t-m">

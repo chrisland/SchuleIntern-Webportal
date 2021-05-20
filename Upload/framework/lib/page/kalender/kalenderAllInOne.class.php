@@ -28,8 +28,6 @@ class kalenderAllInOne extends AbstractPage {
 
     if ( $_REQUEST['action'] == 'icsfeed') {
 
-      
-      $kalenderID = '1';
 
       $calendar = new Eluceo\iCal\Component\Calendar('schule-intern');
       $calendar->setPublishedTTL('PT15M');
@@ -70,25 +68,51 @@ class kalenderAllInOne extends AbstractPage {
         $vTimezone->addComponent($vTimezoneRuleStd);
         $vCalendar->setTimezone($vTimezone);
       */
-      
-      $ret = [];
-      $result = DB::getDB()->query("SELECT * FROM kalender_allInOne_eintrag WHERE kalenderID = ".intval($kalenderID));
-      while($row = DB::getDB()->fetch_array($result)) {
 
-        $event = (new Eluceo\iCal\Component\Event())
-        ->setUseTimezone(true)
-        ->setUseUtc(false)
-        ->setSummary(DB::getDB()->decodeString($row['eintragTitel']))
-        ->setNoTime(false)
-        ->setDtStart(new \DateTime($row['eintragDatumStart'].' '.$row['eintragTimeStart'], $dtz))
-        ->setDtEnd(new \DateTime($row['eintragDatumEnde'].' '.$row['eintragTimeEnde'], $dtz))
-        ->setLocation( DB::getDB()->decodeString($row['eintragOrt']) )
-        ->setDescription( DB::getDB()->decodeString($row['eintragKommentar']) );
+        $kalenderIDs_array = [];
+        $result_cal = DB::getDB()->query("SELECT kalenderID, kalenderName FROM kalender_allInOne WHERE kalenderPublic = 1 ");
+        while($row = DB::getDB()->fetch_array($result_cal)) {
+            array_push($kalenderIDs_array, array(
+                "id" => intval($row['kalenderID']),
+                "name" => $row['kalenderName']
+            ));
+        }
 
-        $calendar->addComponent($event);
-      
 
-      }
+    if (count($kalenderIDs_array) > 0) {
+
+        foreach ($kalenderIDs_array as $kalender) {
+
+            $result = DB::getDB()->query("SELECT * FROM kalender_allInOne_eintrag WHERE kalenderID = ".$kalender['id']  );
+
+              while($row = DB::getDB()->fetch_array($result)) {
+
+                $event = (new Eluceo\iCal\Component\Event())
+                ->setUseTimezone(false)
+                ->setUseUtc(true)
+                ->setSummary(DB::getDB()->decodeString($row['eintragTitel']))
+                ->setNoTime(false)
+                ->setDtStart(new \DateTime($row['eintragDatumStart'].' '.$row['eintragTimeStart'], $dtz))
+                ->setCategories([$kalender['name']])
+                ->setLocation( DB::getDB()->decodeString($row['eintragOrt']) )
+                ->setDescription( DB::getDB()->decodeString($row['eintragKommentar']) );
+
+                if (  intval($row['eintragDatumEnde']) > 0 ) {
+                    if (intval($row['eintragTimeEnde']) > 0) {
+                        $event->setDtEnd(new \DateTime($row['eintragDatumEnde'] . ' ' . $row['eintragTimeEnde']));
+                    }
+                } else {
+                    if (intval($row['eintragTimeEnde']) > 0) {
+                        $event->setDtEnd(new \DateTime($row['eintragDatumStart'] . ' ' . $row['eintragTimeEnde']));
+                    }
+                }
+
+                $calendar->addComponent($event);
+
+              }
+
+        }
+    }
       
  
       header('Content-Type: text/calendar; charset=utf-8');
@@ -275,6 +299,7 @@ class kalenderAllInOne extends AbstractPage {
                 kalenderSort = '".DB::getDB()->escapeString($item->kalenderSort)."',
                 kalenderPreSelect = '".DB::getDB()->escapeString($item->kalenderPreSelect)."',
                 kalenderFerien = '".DB::getDB()->escapeString($item->kalenderFerien)."',
+                kalenderPublic = '".DB::getDB()->escapeString($item->kalenderPublic)."',
                 kalenderAcl = ".$return['aclID']."
                 WHERE kalenderID = " . intval($item->kalenderID) . ";");
                 
@@ -282,13 +307,14 @@ class kalenderAllInOne extends AbstractPage {
               DB::getDB()->query("DELETE FROM kalender_allInOne WHERE kalenderID = ". intval($item->kalenderID));
             }
           } else {
-            DB::getDB()->query("INSERT INTO kalender_allInOne (kalenderID, kalenderName, kalenderColor, kalenderSort, kalenderPreSelect, kalenderFerien, kalenderAcl ) values(
+            DB::getDB()->query("INSERT INTO kalender_allInOne (kalenderID, kalenderName, kalenderColor, kalenderSort, kalenderPreSelect, kalenderFerien, kalenderPublic, kalenderAcl ) values(
             '" . DB::getDB()->escapeString($item->kalenderID) . "',
             '" . DB::getDB()->escapeString($item->kalenderName) . "',
             '" . DB::getDB()->escapeString($item->kalenderColor) . "',
             '" . DB::getDB()->escapeString($item->kalenderSort) . "',
             '" . DB::getDB()->escapeString($item->kalenderPreSelect) . "',
             '" . DB::getDB()->escapeString($item->kalenderFerien) . "',
+            '" . DB::getDB()->escapeString($item->kalenderPublic) . "',
             ".$return['aclID']."
             )");
           }
